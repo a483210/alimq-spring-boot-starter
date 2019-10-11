@@ -1,0 +1,13 @@
+aliyun:
+  mq:
+    address: 你的mq地址
+    access-key: 你的key
+    secret-key: 你的key
+    producer:
+      enabled: true
+      order-enabled: true
+      transaction-enabled: true
+      group-id: 你的Group
+    consumer:
+      enabled: true
+      group-id: 你的Group
