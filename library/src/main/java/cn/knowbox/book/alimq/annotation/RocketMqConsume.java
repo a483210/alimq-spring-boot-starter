@@ -1,6 +1,6 @@
 package cn.knowbox.book.alimq.annotation;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  *
  * @author Created by gold on 2019/10/4 15:22
  */
-@Service
+@Component
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

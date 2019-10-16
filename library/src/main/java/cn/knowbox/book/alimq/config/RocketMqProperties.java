@@ -20,8 +20,6 @@ public class RocketMqProperties {
 
     private String secretKey;
 
-    private String topic;
-
     @NestedConfigurationProperty
     private ProducerProperty producer;
 

@@ -14,14 +14,14 @@ import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.message.TransactionMessage;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionChecker;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 默认的本地事务状态检测器实现
  *
  * @author Created by gold on 2019/10/4 15:27
  */
-@Slf4j
+@Log4j2
 public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
 
     private Map<String, TransactionChecker<?>> transactionChecks;

@@ -6,7 +6,8 @@ import com.aliyun.openservices.ons.api.PropertyKeyConst;
 
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.Properties;
 
@@ -19,7 +20,7 @@ import cn.knowbox.book.alimq.utils.RocketMqUtil;
  *
  * @author Created by gold on 2019/10/4 15:25
  */
-public class ConsumerProcessor implements BeanPostProcessor {
+public class ConsumerProcessor implements ApplicationContextAware {
 
     private Properties properties;
     private Consumer consumer;
@@ -33,9 +34,31 @@ public class ConsumerProcessor implements BeanPostProcessor {
         }
 
         this.properties = properties;
+
+        start();
     }
 
-    public void start() {
+    /**
+     * 获取所有消费者订阅内容(Topic 、 Tag)
+     */
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        for (String beanName : applicationContext.getBeanDefinitionNames()) {
+            Object bean = applicationContext.getBean(beanName);
+            Class<?> cls = AopUtils.getTargetClass(bean);
+
+            RocketMqConsume annotation = cls.getAnnotation(RocketMqConsume.class);
+            if (annotation != null) {
+                RocketMqListener<?> listener = (RocketMqListener) bean;
+
+                String tag = RocketMqUtil.generateTag(annotation.tag());
+                consumer.subscribe(annotation.topic(), tag, new ConsumerConverter<>(listener, annotation));
+            }
+        }
+
+    }
+
+    private void start() {
         consumer = ONSFactory.createConsumer(properties);
         consumer.start();
     }
@@ -44,21 +67,5 @@ public class ConsumerProcessor implements BeanPostProcessor {
         if (consumer != null) {
             consumer.shutdown();
         }
-    }
-
-    /**
-     * 获取所有消费者订阅内容(Topic 、 Tag)
-     */
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        Class<?> clazz = AopUtils.getTargetClass(bean);
-        RocketMqConsume annotation = clazz.getAnnotation(RocketMqConsume.class);
-        if (annotation != null) {
-            RocketMqListener<?> listener = (RocketMqListener) bean;
-
-            String tag = RocketMqUtil.generateTag(annotation.tag());
-            consumer.subscribe(annotation.topic(), tag, new ConsumerConverter<>(listener, annotation));
-        }
-        return bean;
     }
 }

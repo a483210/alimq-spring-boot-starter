@@ -20,14 +20,14 @@ import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.template.RocketMqOrderTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTransactionTemplate;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 初始化(生成|消费)相关配置
  *
  * @author Created by gold on 2019/10/4 15:22
  */
-@Slf4j
+@Log4j2
 @Configuration
 @EnableConfigurationProperties(RocketMqProperties.class)
 public class RocketMqAutoConfiguration {
@@ -121,7 +121,7 @@ public class RocketMqAutoConfiguration {
         return new TransactionCheckerProcessor(transactionProducer);
     }
 
-    @Bean(initMethod = "start", destroyMethod = "shutdown")
+    @Bean(destroyMethod = "shutdown")
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.consumer", value = "enabled", havingValue = "true")
     public ConsumerProcessor consumer(RocketMqProperties rocketMqProperties) {

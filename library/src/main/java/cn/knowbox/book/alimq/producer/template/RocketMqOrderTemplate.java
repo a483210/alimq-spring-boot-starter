@@ -6,14 +6,14 @@ import com.aliyun.openservices.ons.api.bean.OrderProducerBean;
 import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.producer.RocketMqOrderType;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 顺序消息生产者
  *
  * @author Created by gold on 2019/10/4 15:27
  */
-@Slf4j
+@Log4j2
 public class RocketMqOrderTemplate {
 
     private OrderProducerBean orderProducer;

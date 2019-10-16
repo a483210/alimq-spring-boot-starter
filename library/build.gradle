@@ -9,9 +9,6 @@ dependencies {
 
     compile 'com.aliyun.openservices:ons-client:1.8.4.Final'
 
-    compile 'org.springframework:spring-context:5.1.9.RELEASE'
-
-    compile 'org.springframework.boot:spring-boot-autoconfigure:2.1.8.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter:2.1.8.RELEASE'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.1.8.RELEASE'
-
 }

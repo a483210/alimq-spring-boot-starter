@@ -17,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -24,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Created by gold on 2019/10/4 15:27
  */
-@Slf4j
+@Log4j2
 public class RocketMqTemplate {
 
     private static final long DELAY_DAY_7 = 7 * 24 * 60 * 60 * 1000;
