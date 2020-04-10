@@ -9,10 +9,14 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import cn.knowbox.book.alimq.annotation.RocketMqConsume;
+import cn.knowbox.book.alimq.config.RocketMqProperties;
 import cn.knowbox.book.alimq.error.RocketMqException;
+import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
 
 /**
@@ -22,20 +26,16 @@ import cn.knowbox.book.alimq.utils.RocketMqUtil;
  */
 public class ConsumerProcessor implements ApplicationContextAware {
 
-    private Properties properties;
-    private Consumer consumer;
+    private MqParser mqParser;
+    private RocketMqProperties properties;
 
-    public ConsumerProcessor(Properties properties) {
-        if (properties == null || properties.get(PropertyKeyConst.GROUP_ID) == null
-                || properties.get(PropertyKeyConst.AccessKey) == null
-                || properties.get(PropertyKeyConst.SecretKey) == null
-                || properties.get(PropertyKeyConst.NAMESRV_ADDR) == null) {
-            throw new RocketMqException("Consumer初始化失败，配置错误！");
-        }
+    private Map<String, Consumer> consumers;
 
+    public ConsumerProcessor(MqParser mqParser, RocketMqProperties properties) {
+        this.mqParser = mqParser;
         this.properties = properties;
 
-        start();
+        this.consumers = new LinkedHashMap<>();
     }
 
     /**
@@ -49,22 +49,50 @@ public class ConsumerProcessor implements ApplicationContextAware {
 
             RocketMqConsume annotation = cls.getAnnotation(RocketMqConsume.class);
             if (annotation != null) {
-                RocketMqListener<?> listener = (RocketMqListener) bean;
+                String groupId = annotation.groupId();
 
+                RocketMqListener<?> listener = (RocketMqListener) bean;
                 String tag = RocketMqUtil.generateTag(annotation.tag());
-                consumer.subscribe(annotation.topic(), tag, new ConsumerConverter<>(listener, annotation));
+
+                getConsumer(groupId).subscribe(annotation.topic(), tag, new ConsumerConverter<>(mqParser, listener, annotation));
             }
         }
 
     }
 
-    private void start() {
-        consumer = ONSFactory.createConsumer(properties);
+    private Consumer getConsumer(String groupId) {
+        Consumer consumer = consumers.get(groupId);
+        if (consumer != null) {
+            return consumer;
+        }
+
+        Properties p = new Properties();
+
+        p.setProperty(PropertyKeyConst.GROUP_ID, groupId);
+        p.setProperty(PropertyKeyConst.AccessKey, properties.getAccessKey());
+        p.setProperty(PropertyKeyConst.SecretKey, properties.getSecretKey());
+        p.setProperty(PropertyKeyConst.NAMESRV_ADDR, properties.getAddress());
+
+        consumer = create(p);
+
+        consumers.put(groupId, consumer);
+
+        return consumer;
+    }
+
+    private Consumer create(Properties properties) {
+        if (!RocketMqUtil.checkProperties(properties)) {
+            throw new RocketMqException("Consumer初始化失败，配置错误！");
+        }
+
+        Consumer consumer = ONSFactory.createConsumer(properties);
         consumer.start();
+
+        return consumer;
     }
 
     public void shutdown() {
-        if (consumer != null) {
+        for (Consumer consumer : consumers.values()) {
             consumer.shutdown();
         }
     }

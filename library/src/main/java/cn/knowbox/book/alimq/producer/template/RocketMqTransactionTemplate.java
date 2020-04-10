@@ -7,6 +7,7 @@ import com.aliyun.openservices.ons.api.transaction.LocalTransactionExecuter;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
+import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.impl.LocalTransactionExecuterImpl;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionExecuter;
@@ -21,9 +22,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class RocketMqTransactionTemplate {
 
+    private MqParser mqParser;
     private TransactionProducerBean transactionProducer;
 
-    public RocketMqTransactionTemplate(TransactionProducerBean transactionProducer) {
+    public RocketMqTransactionTemplate(MqParser mqParser, TransactionProducerBean transactionProducer) {
+        this.mqParser = mqParser;
         this.transactionProducer = transactionProducer;
     }
 
@@ -36,7 +39,8 @@ public class RocketMqTransactionTemplate {
      */
     @SuppressWarnings("unchecked")
     public <T> SendResult send(IMessageEvent event, T domain, TransactionExecuter<T> executer) {
-        return send(new RocketMqMessage(event, domain), new LocalTransactionExecuterImpl<>(executer, (Class<T>) domain.getClass()), null);
+        return send(new RocketMqMessage(event, format(domain)),
+                new LocalTransactionExecuterImpl<>(mqParser, executer, (Class<T>) domain.getClass()), null);
     }
 
     /**
@@ -49,7 +53,8 @@ public class RocketMqTransactionTemplate {
      */
     @SuppressWarnings("unchecked")
     public <T> SendResult send(IMessageEvent event, T domain, TransactionExecuter<T> executer, Object arg) {
-        return send(new RocketMqMessage(event, domain), new LocalTransactionExecuterImpl<>(executer, (Class<T>) domain.getClass()), arg);
+        return send(new RocketMqMessage(event, format(domain)),
+                new LocalTransactionExecuterImpl<>(mqParser, executer, (Class<T>) domain.getClass()), arg);
     }
 
     /**
@@ -59,7 +64,7 @@ public class RocketMqTransactionTemplate {
      * @param executer 执行器
      */
     public <T> SendResult send(RocketMqMessage event, TransactionExecuter<T> executer, Class<T> cls) {
-        return send(event, new LocalTransactionExecuterImpl<>(executer, cls), null);
+        return send(event, new LocalTransactionExecuterImpl<>(mqParser, executer, cls), null);
     }
 
     /**
@@ -70,7 +75,7 @@ public class RocketMqTransactionTemplate {
      * @param arg      额外参数
      */
     public <T> SendResult send(RocketMqMessage event, TransactionExecuter<T> executer, Class<T> cls, Object arg) {
-        return send(event, new LocalTransactionExecuterImpl<>(executer, cls), arg);
+        return send(event, new LocalTransactionExecuterImpl<>(mqParser, executer, cls), arg);
     }
 
     /**
@@ -81,7 +86,7 @@ public class RocketMqTransactionTemplate {
      * @param executer 执行器
      */
     public SendResult send(IMessageEvent event, Object domain, LocalTransactionExecuter executer) {
-        return send(new RocketMqMessage(event, domain), executer, null);
+        return send(new RocketMqMessage(event, format(domain)), executer, null);
     }
 
     /**
@@ -93,7 +98,7 @@ public class RocketMqTransactionTemplate {
      * @param arg      额外参数
      */
     public SendResult send(IMessageEvent event, Object domain, LocalTransactionExecuter executer, Object arg) {
-        return send(new RocketMqMessage(event, domain), executer, arg);
+        return send(new RocketMqMessage(event, format(domain)), executer, arg);
     }
 
     /**
@@ -124,6 +129,10 @@ public class RocketMqTransactionTemplate {
         log.info("sendTransaction [message：{}]", event.toString());
 
         return transactionProducer.send(RocketMqTemplate.createMessage(event), executer, arg);
+    }
+
+    private String format(Object domain) {
+        return RocketMqTemplate.format(mqParser, domain);
     }
 
 }

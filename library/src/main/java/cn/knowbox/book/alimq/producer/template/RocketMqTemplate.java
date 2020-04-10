@@ -17,8 +17,8 @@ import java.util.concurrent.CompletableFuture;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
+import cn.knowbox.book.alimq.parser.MqParser;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 普通消息、定时消息、延迟消息生产者
@@ -30,9 +30,11 @@ public class RocketMqTemplate {
 
     private static final long DELAY_DAY_7 = 7 * 24 * 60 * 60 * 1000;
 
+    private MqParser mqParser;
     private ProducerBean producer;
 
-    public RocketMqTemplate(ProducerBean producer) {
+    public RocketMqTemplate(MqParser mqParser, ProducerBean producer) {
+        this.mqParser = mqParser;
         this.producer = producer;
     }
 
@@ -43,7 +45,7 @@ public class RocketMqTemplate {
      * @param domain 对象
      */
     public void sendOneway(String topic, Object domain) {
-        sendOneway(new RocketMqMessage(topic, domain));
+        sendOneway(new RocketMqMessage(topic, format(domain)));
     }
 
     /**
@@ -53,7 +55,7 @@ public class RocketMqTemplate {
      * @param domain 对象
      */
     public void sendOneway(IMessageEvent event, Object domain) {
-        sendOneway(new RocketMqMessage(event, domain));
+        sendOneway(new RocketMqMessage(event, format(domain)));
     }
 
     /**
@@ -75,7 +77,7 @@ public class RocketMqTemplate {
      * @param domain 对象
      */
     public SendResult send(String topic, Object domain) {
-        return send(new RocketMqMessage(topic, domain));
+        return send(new RocketMqMessage(topic, format(domain)));
     }
 
     /**
@@ -85,7 +87,7 @@ public class RocketMqTemplate {
      * @param domain 对象
      */
     public SendResult send(IMessageEvent event, Object domain) {
-        return send(new RocketMqMessage(event, domain));
+        return send(new RocketMqMessage(event, format(domain)));
     }
 
     /**
@@ -156,7 +158,7 @@ public class RocketMqTemplate {
      * @param domain 对象
      */
     public CompletableFuture<SendResult> sendAsync(String topic, Object domain) {
-        return sendAsync(new RocketMqMessage(topic, domain));
+        return sendAsync(new RocketMqMessage(topic, format(domain)));
     }
 
     /**
@@ -166,7 +168,7 @@ public class RocketMqTemplate {
      * @param domain 对象
      */
     public CompletableFuture<SendResult> sendAsync(IMessageEvent event, Object domain) {
-        return sendAsync(new RocketMqMessage(event, domain));
+        return sendAsync(new RocketMqMessage(event, format(domain)));
     }
 
     /**
@@ -244,6 +246,10 @@ public class RocketMqTemplate {
         return future;
     }
 
+    private String format(Object domain) {
+        return format(mqParser, domain);
+    }
+
     static Message createMessage(RocketMqMessage event) {
         if (event == null) {
             throw new RocketMqException("事件不允许为空！");
@@ -259,6 +265,23 @@ public class RocketMqTemplate {
         message.setKey(event.generateTxId());
 
         return message;
+    }
+
+    static String format(MqParser mqParser, Object domain) {
+        if (domain == null) {
+            throw new RocketMqException("domain不能为空！");
+        }
+
+        if (domain instanceof String) {
+            return (String) domain;
+        }
+
+        String json = mqParser.format(domain);
+        if (StringUtils.isEmpty(json)) {
+            throw new RocketMqException("domain不是Json！");
+        }
+
+        return json;
     }
 
     private static void checkStartTime(long startTime) {

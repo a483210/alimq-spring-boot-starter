@@ -20,11 +20,11 @@ public class TransactionMessage<T> {
     private long hashId;
     private Object arg;
 
-    public TransactionMessage(RocketMqMessage rocketMqMessage, Class<T> cls, long hashId, Object arg) {
+    public TransactionMessage(RocketMqMessage rocketMqMessage, T domain, long hashId, Object arg) {
         this.txId = rocketMqMessage.getTxId();
         this.topic = rocketMqMessage.getTopic();
         this.tag = rocketMqMessage.getTag();
-        this.domain = RocketMqUtil.parse(rocketMqMessage.getDomain(), cls);
+        this.domain = domain;
         this.domainKey = rocketMqMessage.getDomainKey();
         this.createdDate = rocketMqMessage.getCreatedDate();
         this.hashId = hashId;

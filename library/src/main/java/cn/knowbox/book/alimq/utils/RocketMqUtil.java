@@ -1,14 +1,13 @@
 package cn.knowbox.book.alimq.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.aliyun.openservices.ons.api.PropertyKeyConst;
 
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Properties;
 import java.util.zip.CRC32;
 
 /**
@@ -18,9 +17,20 @@ import java.util.zip.CRC32;
  */
 public class RocketMqUtil {
 
-    public static final ObjectMapper INSTANCE = new ObjectMapper();
-
     private RocketMqUtil() {
+    }
+
+    /**
+     * 检查配置是否合法
+     *
+     * @param properties 配置
+     */
+    public static boolean checkProperties(Properties properties) {
+        return properties != null
+                && properties.get(PropertyKeyConst.GROUP_ID) != null
+                && properties.get(PropertyKeyConst.AccessKey) != null
+                && properties.get(PropertyKeyConst.SecretKey) != null
+                && properties.get(PropertyKeyConst.NAMESRV_ADDR) != null;
     }
 
     /**
@@ -54,44 +64,12 @@ public class RocketMqUtil {
     }
 
     /**
-     * 将对象解析为字符串
-     *
-     * @param value 对象
-     */
-    @Nullable
-    public static String toJson(Object value) {
-        try {
-            return INSTANCE.writeValueAsString(value);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * 将对象解析为字符串
-     *
-     * @param json json字符串
-     * @param cls  类型
-     */
-    @Nullable
-    public static <T> T parse(String json, Class<T> cls) {
-        try {
-            return INSTANCE.readValue(json, cls);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
      * 解析当前索引泛型
      *
      * @param cls 类
      */
     @Nullable
-    @SuppressWarnings("unchecked")
-    public static <T> Class<T> parseType(Class<?> cls, Class<?> iCls) {
+    public static Type parseType(Class<?> cls, Class<?> iCls) {
         Type[] genTypes = cls.getGenericInterfaces();
         if (genTypes.length == 0) {
             return null;
@@ -118,7 +96,7 @@ public class RocketMqUtil {
             return null;
         }
 
-        return (Class<T>) typeParams[0];
+        return typeParams[0];
     }
 
 }

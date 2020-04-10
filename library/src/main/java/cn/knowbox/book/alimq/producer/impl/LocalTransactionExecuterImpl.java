@@ -8,6 +8,7 @@ import org.springframework.util.SerializationUtils;
 
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.message.TransactionMessage;
+import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionExecuter;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
 import lombok.extern.log4j.Log4j2;
@@ -20,10 +21,14 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class LocalTransactionExecuterImpl<T> implements LocalTransactionExecuter {
 
+    private MqParser mqParser;
+
     private TransactionExecuter<T> transactionExecuter;
     private Class<T> clsType;
 
-    public LocalTransactionExecuterImpl(TransactionExecuter<T> transactionExecuter, Class<T> clsType) {
+    public LocalTransactionExecuterImpl(MqParser mqParser, TransactionExecuter<T> transactionExecuter, Class<T> clsType) {
+        this.mqParser = mqParser;
+
         this.transactionExecuter = transactionExecuter;
         this.clsType = clsType;
     }
@@ -40,7 +45,12 @@ public class LocalTransactionExecuterImpl<T> implements LocalTransactionExecuter
                 throw new NullPointerException("rocketMqMessage null");
             }
 
-            transactionStatus = transactionExecuter.execute(new TransactionMessage<>(message, clsType, crc32Id, arg));
+            T value = mqParser.parse(message.getDomain(), clsType);
+            if (value == null) {
+                throw new NullPointerException("rocketMqMessage value null");
+            }
+
+            transactionStatus = transactionExecuter.execute(new TransactionMessage<>(message, value, crc32Id, arg));
 
             log.info("TransactionExecuter success [msgId：{}, transactionStatus：{}]", msgId, transactionStatus.name());
         } catch (Throwable throwable) {

@@ -6,12 +6,14 @@ import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
 
 import org.springframework.util.SerializationUtils;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.message.TransactionMessage;
+import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionChecker;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
 import lombok.extern.log4j.Log4j2;
@@ -24,10 +26,14 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
 
-    private Map<String, TransactionChecker<?>> transactionChecks;
-    private Map<String, Class<?>> checkTypes;
+    private MqParser mqParser;
 
-    public LocalTransactionCheckerImpl() {
+    private Map<String, TransactionChecker<?>> transactionChecks;
+    private Map<String, Type> checkTypes;
+
+    public LocalTransactionCheckerImpl(MqParser mqParser) {
+        this.mqParser = mqParser;
+
         this.transactionChecks = new HashMap<>();
         this.checkTypes = new HashMap<>();
     }
@@ -35,12 +41,12 @@ public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
     public void put(String checkerKey, TransactionChecker<?> transactionCheck) {
         transactionChecks.put(checkerKey, transactionCheck);
 
-        Class<?> typeCls = RocketMqUtil.parseType(transactionCheck.getClass(), TransactionChecker.class);
-        if (typeCls == null) {
+        Type type = RocketMqUtil.parseType(transactionCheck.getClass(), TransactionChecker.class);
+        if (type == null) {
             throw new RocketMqException(String.format("%s缺少泛型！", transactionCheck.getClass().getSimpleName()));
         }
 
-        checkTypes.put(checkerKey, typeCls);
+        checkTypes.put(checkerKey, type);
     }
 
     public boolean contains(String checkerKey) {
@@ -66,7 +72,12 @@ public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
                 throw new RocketMqException(String.format("TransactionChecker[%s]未初始化！", checkerKey));
             }
 
-            transactionStatus = transactionChecker.check(new TransactionMessage(message, checkTypes.get(checkerKey), crc32Id, null));
+            Object value = mqParser.parse(message.getDomain(), checkTypes.get(checkerKey));
+            if (value == null) {
+                throw new NullPointerException("rocketMqMessage value null");
+            }
+
+            transactionStatus = transactionChecker.check(new TransactionMessage(message, value, crc32Id, null));
 
             log.info("TransactionChecker success [msgId：{}, transactionStatus：{}]", msgId, transactionStatus.name());
         } catch (Exception e) {

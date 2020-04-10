@@ -24,19 +24,12 @@ public class RocketMqMessage implements Serializable {
     public RocketMqMessage() {
     }
 
-    public RocketMqMessage(String topic, Object domain) {
+    public RocketMqMessage(String topic, String domain) {
         this.topic = topic;
-        if (domain instanceof String) {
-            this.domain = (String) domain;
-        } else {
-            this.domain = RocketMqUtil.toJson(domain);
-            if (StringUtils.isEmpty(domain)) {
-                throw new RocketMqException("domain不是Json！");
-            }
-        }
+        this.domain = domain;
     }
 
-    public RocketMqMessage(IMessageEvent event, Object domain) {
+    public RocketMqMessage(IMessageEvent event, String domain) {
         this(event.getTopic(), domain);
         this.tag = RocketMqUtil.generateTag(event.getTags());
     }

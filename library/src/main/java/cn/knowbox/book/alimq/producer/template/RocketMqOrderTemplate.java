@@ -5,6 +5,7 @@ import com.aliyun.openservices.ons.api.bean.OrderProducerBean;
 
 import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
+import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.RocketMqOrderType;
 import lombok.extern.log4j.Log4j2;
 
@@ -16,9 +17,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class RocketMqOrderTemplate {
 
+    private MqParser mqParser;
     private OrderProducerBean orderProducer;
 
-    public RocketMqOrderTemplate(OrderProducerBean orderProducer) {
+    public RocketMqOrderTemplate(MqParser mqParser, OrderProducerBean orderProducer) {
+        this.mqParser = mqParser;
         this.orderProducer = orderProducer;
     }
 
@@ -29,7 +32,7 @@ public class RocketMqOrderTemplate {
      * @param domain 对象
      */
     public SendResult send(IMessageEvent event, Object domain) {
-        return send(new RocketMqMessage(event, domain));
+        return send(new RocketMqMessage(event, format(domain)));
     }
 
     /**
@@ -48,7 +51,7 @@ public class RocketMqOrderTemplate {
      * @param domain 对象
      */
     public SendResult send(IMessageEvent event, Object domain, RocketMqOrderType orderType) {
-        return send(new RocketMqMessage(event, domain), orderType);
+        return send(new RocketMqMessage(event, format(domain)), orderType);
     }
 
     /**
@@ -81,7 +84,7 @@ public class RocketMqOrderTemplate {
      * @param domain 对象
      */
     public SendResult send(IMessageEvent event, Object domain, String sharding) {
-        return send(new RocketMqMessage(event, domain), sharding);
+        return send(new RocketMqMessage(event, format(domain)), sharding);
     }
 
     /**
@@ -94,5 +97,9 @@ public class RocketMqOrderTemplate {
         log.info("sendOrder [message：{}, sharding：{}]", event.toString(), sharding);
 
         return orderProducer.send(RocketMqTemplate.createMessage(event), sharding);
+    }
+
+    private String format(Object domain) {
+        return RocketMqTemplate.format(mqParser, domain);
     }
 }

@@ -1,5 +1,7 @@
 package cn.knowbox.book.alimq.config;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -11,6 +13,5 @@ import lombok.Data;
 public class ConsumerProperty {
 
     private boolean enabled;
-    private String groupId;
 
 }

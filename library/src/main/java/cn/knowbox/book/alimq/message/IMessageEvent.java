@@ -5,8 +5,14 @@ package cn.knowbox.book.alimq.message;
  */
 public interface IMessageEvent {
 
+    /**
+     * 返回topic
+     */
     String getTopic();
 
+    /**
+     * 返回tags
+     */
     String[] getTags();
 
 }

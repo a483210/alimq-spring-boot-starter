@@ -5,12 +5,16 @@ import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
 
+import org.springframework.aop.support.AopUtils;
 import org.springframework.util.SerializationUtils;
 import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Type;
 
 import cn.knowbox.book.alimq.annotation.RocketMqConsume;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
+import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
 import lombok.extern.log4j.Log4j2;
 
@@ -22,16 +26,21 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ConsumerConverter<T> implements MessageListener {
 
-    private Class<T> typeCls;
+    private MqParser mqParser;
+
+    private Type type;
     private RocketMqListener<T> rocketMqListener;
     private Class<? extends Throwable>[] reconsumeFor;
 
-    ConsumerConverter(RocketMqListener<T> rocketMqListener, RocketMqConsume rocketMqConsume) {
-        typeCls = RocketMqUtil.parseType(rocketMqListener.getClass(), RocketMqListener.class);
-        if (typeCls == null) {
-            throw new RocketMqException(String.format("%s缺少泛型！", rocketMqListener.getClass().getSimpleName()));
+    ConsumerConverter(MqParser mqParser, RocketMqListener<T> rocketMqListener, RocketMqConsume rocketMqConsume) {
+        Class<?> listenerCls = AopUtils.getTargetClass(rocketMqListener);
+
+        this.type = RocketMqUtil.parseType(listenerCls, RocketMqListener.class);
+        if (type == null) {
+            throw new RocketMqException(String.format("%s缺少泛型！", listenerCls.getSimpleName()));
         }
 
+        this.mqParser = mqParser;
         this.rocketMqListener = rocketMqListener;
         this.reconsumeFor = rocketMqConsume.reconsumeFor();
     }
@@ -50,7 +59,7 @@ public class ConsumerConverter<T> implements MessageListener {
             if (StringUtils.isEmpty(domain)) {
                 throw new NullPointerException("domain null");
             }
-            T value = RocketMqUtil.parse(domain, typeCls);
+            T value = mqParser.parse(domain, type);
             if (value == null) {
                 throw new NullPointerException("value null");
             }
