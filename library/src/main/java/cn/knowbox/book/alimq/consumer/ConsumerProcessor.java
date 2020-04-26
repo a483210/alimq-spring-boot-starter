@@ -8,7 +8,9 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.CollectionUtils;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -92,8 +94,37 @@ public class ConsumerProcessor implements ApplicationContextAware {
     }
 
     public void shutdown() {
-        for (Consumer consumer : consumers.values()) {
-            consumer.shutdown();
+        if (CollectionUtils.isEmpty(consumers)) {
+            return;
         }
+
+        consumers.values()
+                .forEach(consumer -> {
+                    if (!consumer.isClosed()) {
+                        consumer.shutdown();
+                    }
+                });
+
+        consumers.clear();
+    }
+
+    public boolean isStarted() {
+        return consumers.values()
+                .stream()
+                .allMatch(Consumer::isStarted);
+    }
+
+    public Map<String, Boolean> getStatus() {
+        if (CollectionUtils.isEmpty(consumers)) {
+            return new HashMap<>();
+        }
+
+        Map<String, Boolean> map = new HashMap<>();
+
+        consumers.forEach((name, consumer) -> {
+            map.put(name, consumer.isStarted());
+        });
+
+        return map;
     }
 }

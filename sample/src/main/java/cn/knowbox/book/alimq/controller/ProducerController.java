@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import cn.knowbox.book.alimq.model.SingleMessage;
@@ -39,11 +41,17 @@ public class ProducerController {
             return "failure";
         }
 
-        SingleMessage singleMessage = new SingleMessage();
-        singleMessage.setMsgId(UUID.randomUUID().toString());
-        singleMessage.setContent(content);
+        List<SingleMessage> list = new ArrayList<>();
 
-        rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage);
+        for (int i = 0; i < 10; i++) {
+            SingleMessage singleMessage = new SingleMessage();
+            singleMessage.setMsgId(UUID.randomUUID().toString());
+            singleMessage.setContent(content);
+
+            list.add(singleMessage);
+        }
+
+        rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE_LIST, list);
 
         return "success";
     }

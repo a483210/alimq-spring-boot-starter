@@ -11,6 +11,7 @@ import lombok.Getter;
 @Getter
 public enum MessageEvent implements IMessageEvent {
     SINGLE_MESSAGE("singleMessage", "v1"),
+    SINGLE_MESSAGE_LIST("singleMessage", "list"),
     ;
 
     private String topic;
