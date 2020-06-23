@@ -16,14 +16,14 @@ import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * mq消费转换器，消息消费逻辑处理(如果抛出异常，则重新入队列)
  *
  * @author Created by gold on 2019/10/4 15:52
  */
-@Log4j2
+@Slf4j
 public class ConsumerConverter<T> implements MessageListener {
 
     private MqParser mqParser;

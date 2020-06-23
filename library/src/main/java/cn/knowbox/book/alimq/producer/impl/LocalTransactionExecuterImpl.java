@@ -11,14 +11,14 @@ import cn.knowbox.book.alimq.message.TransactionMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionExecuter;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 默认的本地事务执行器实现
  *
  * @author Created by gold on 2019/10/4 15:27
  */
-@Log4j2
+@Slf4j
 public class LocalTransactionExecuterImpl<T> implements LocalTransactionExecuter {
 
     private MqParser mqParser;

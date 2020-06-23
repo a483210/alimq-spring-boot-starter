@@ -7,14 +7,14 @@ import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.RocketMqOrderType;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 顺序消息生产者
  *
  * @author Created by gold on 2019/10/4 15:27
  */
-@Log4j2
+@Slf4j
 public class RocketMqOrderTemplate {
 
     private MqParser mqParser;

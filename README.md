@@ -7,7 +7,7 @@
 
 消息消费
 
-    @Log4j2
+    @Slf4j
     @RocketMqConsume(topic = "singleMessage")
     public class SingleMessageConsumer implements RocketMqListener<SingleMessage> {
 

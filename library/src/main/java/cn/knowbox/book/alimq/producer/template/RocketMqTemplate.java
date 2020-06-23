@@ -18,14 +18,14 @@ import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 普通消息、定时消息、延迟消息生产者
  *
  * @author Created by gold on 2019/10/4 15:27
  */
-@Log4j2
+@Slf4j
 public class RocketMqTemplate {
 
     private static final long DELAY_DAY_7 = 7 * 24 * 60 * 60 * 1000;

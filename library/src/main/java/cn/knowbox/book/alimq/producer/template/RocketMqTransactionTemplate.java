@@ -12,14 +12,14 @@ import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.impl.LocalTransactionExecuterImpl;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionExecuter;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 事务消息生产者
  *
  * @author Created by gold on 2019/10/4 15:38
  */
-@Log4j2
+@Slf4j
 public class RocketMqTransactionTemplate {
 
     private MqParser mqParser;
