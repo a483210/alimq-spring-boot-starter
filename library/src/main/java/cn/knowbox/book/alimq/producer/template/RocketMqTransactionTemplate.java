@@ -126,9 +126,9 @@ public class RocketMqTransactionTemplate {
             throw new RocketMqException(String.format("TransactionChecker[%s]未初始化！", checkerKey));
         }
 
-        log.info("sendTransaction [message：{}]", event.toString());
+        log.info("sendTransaction [message：{}]", event);
 
-        return transactionProducer.send(RocketMqTemplate.createMessage(event), executer, arg);
+        return transactionProducer.send(RocketMqTemplate.createMessage(transactionProducer.getProperties(), event), executer, arg);
     }
 
     private String format(Object domain) {

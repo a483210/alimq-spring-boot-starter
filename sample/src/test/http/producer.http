@@ -1,6 +1,12 @@
 ### 发送普通消息
 POST http://localhost:8089/mq/send/content
 
+### 发送延时消息，默认5秒
+POST http://localhost:8089/mq/sendDelay/contentDelay
+
+### 发送延时消息，自定义时间
+POST http://localhost:8089/mq/sendDelay/contentDelay?delay=15000
+
 ### 发送异步消息
 POST http://localhost:8089/mq/sendAsync/contentAsync
 

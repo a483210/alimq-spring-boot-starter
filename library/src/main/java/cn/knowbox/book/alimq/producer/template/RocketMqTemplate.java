@@ -1,24 +1,22 @@
 package cn.knowbox.book.alimq.producer.template;
 
-import com.aliyun.openservices.ons.api.Message;
-import com.aliyun.openservices.ons.api.OnExceptionContext;
-import com.aliyun.openservices.ons.api.SendCallback;
-import com.aliyun.openservices.ons.api.SendResult;
+import cn.knowbox.book.alimq.consts.RocketMqConstants;
+import cn.knowbox.book.alimq.error.RocketMqException;
+import cn.knowbox.book.alimq.message.IMessageEvent;
+import cn.knowbox.book.alimq.message.RocketMqMessage;
+import cn.knowbox.book.alimq.parser.MqParser;
+import cn.knowbox.book.alimq.producer.RocketMqClusterType;
+import com.aliyun.openservices.ons.api.*;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.SerializationUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
-
-import cn.knowbox.book.alimq.error.RocketMqException;
-import cn.knowbox.book.alimq.message.IMessageEvent;
-import cn.knowbox.book.alimq.message.RocketMqMessage;
-import cn.knowbox.book.alimq.parser.MqParser;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 普通消息、定时消息、延迟消息生产者
@@ -65,7 +63,7 @@ public class RocketMqTemplate {
      * @param event 事件
      */
     public void sendOneway(RocketMqMessage event) {
-        Message message = createMessage(event);
+        Message message = createMessage(producer.getProperties(), event);
 
         producer.sendOneway(message);
     }
@@ -83,6 +81,16 @@ public class RocketMqTemplate {
     /**
      * 同步发送
      *
+     * @param topic  topic
+     * @param domain 对象
+     */
+    public SendResult send(String topic, Object domain, long delay) {
+        return send(new RocketMqMessage(topic, format(domain)), delay);
+    }
+
+    /**
+     * 同步发送
+     *
      * @param event  event事件
      * @param domain 对象
      */
@@ -93,10 +101,35 @@ public class RocketMqTemplate {
     /**
      * 同步发送
      *
+     * @param event  event事件
+     * @param domain 对象
+     * @param delay  延迟
+     */
+    public SendResult send(IMessageEvent event, Object domain, long delay) {
+        return send(new RocketMqMessage(event, format(domain)), delay);
+    }
+
+    /**
+     * 同步发送
+     *
      * @param event 事件
      */
     public SendResult send(RocketMqMessage event) {
         return sendTime(event, 0L);
+    }
+
+    /**
+     * 同步发送，延迟发送
+     *
+     * @param event 事件
+     * @param delay 延迟时间
+     */
+    public SendResult send(RocketMqMessage event, long delay) {
+        if (delay <= 0) {
+            return sendTime(event, 0L);
+        }
+
+        return sendTime(event, System.currentTimeMillis() + delay);
     }
 
     /**
@@ -124,28 +157,18 @@ public class RocketMqTemplate {
     /**
      * 同步发送，延迟发送
      *
-     * @param event 事件
-     * @param delay 延迟时间
-     */
-    public SendResult send(RocketMqMessage event, long delay) {
-        return sendTime(event, System.currentTimeMillis() + delay);
-    }
-
-    /**
-     * 同步发送，延迟发送
-     *
      * @param event     事件
-     * @param startTime 延迟时间
+     * @param startTime 发送的时间点
      */
     public SendResult sendTime(RocketMqMessage event, long startTime) {
         checkStartTime(startTime);
 
-        log.info("send [message：{}]", event.toString());
+        log.info("send [message：{}]", event);
 
-        Message message = createMessage(event);
+        Message message = createMessage(producer.getProperties(), event);
 
         if (startTime > 0) {
-            message.setStartDeliverTime(System.currentTimeMillis() + startTime);
+            message.setStartDeliverTime(startTime);
         }
 
         return producer.send(message);
@@ -164,6 +187,17 @@ public class RocketMqTemplate {
     /**
      * 异步发送
      *
+     * @param topic  topic
+     * @param domain 对象
+     * @param delay  延迟时间
+     */
+    public CompletableFuture<SendResult> sendAsync(String topic, Object domain, long delay) {
+        return sendAsync(new RocketMqMessage(topic, format(domain)), delay);
+    }
+
+    /**
+     * 异步发送
+     *
      * @param event  event事件
      * @param domain 对象
      */
@@ -174,10 +208,35 @@ public class RocketMqTemplate {
     /**
      * 异步发送
      *
+     * @param event  event事件
+     * @param domain 对象
+     * @param delay  延迟时间
+     */
+    public CompletableFuture<SendResult> sendAsync(IMessageEvent event, Object domain, long delay) {
+        return sendAsync(new RocketMqMessage(event, format(domain)), delay);
+    }
+
+    /**
+     * 异步发送
+     *
      * @param event 事件
      */
     public CompletableFuture<SendResult> sendAsync(RocketMqMessage event) {
         return sendAsyncTime(event, 0L);
+    }
+
+    /**
+     * 异步发送，延迟发送
+     *
+     * @param event 事件
+     * @param delay 延迟时间
+     */
+    public CompletableFuture<SendResult> sendAsync(RocketMqMessage event, long delay) {
+        if (delay <= 0) {
+            return sendAsyncTime(event, 0L);
+        }
+
+        return sendAsyncTime(event, System.currentTimeMillis() + delay);
     }
 
     /**
@@ -205,27 +264,17 @@ public class RocketMqTemplate {
     /**
      * 异步发送，延迟发送
      *
-     * @param event 事件
-     * @param delay 延迟时间
-     */
-    public CompletableFuture<SendResult> sendAsync(RocketMqMessage event, long delay) {
-        return sendAsyncTime(event, System.currentTimeMillis() + delay);
-    }
-
-    /**
-     * 异步发送，延迟发送
-     *
      * @param event     事件
-     * @param startTime 发送时间
+     * @param startTime 发送的时间点
      */
     public CompletableFuture<SendResult> sendAsyncTime(RocketMqMessage event, long startTime) {
         checkStartTime(startTime);
 
-        log.info("sendAsync [message：{}]", event.toString());
+        log.info("sendAsync [message：{}]", event);
 
         CompletableFuture<SendResult> future = new CompletableFuture<>();
 
-        Message message = createMessage(event);
+        Message message = createMessage(producer.getProperties(), event);
 
         if (startTime > 0) {
             message.setStartDeliverTime(startTime);
@@ -250,7 +299,7 @@ public class RocketMqTemplate {
         return format(mqParser, domain);
     }
 
-    static Message createMessage(RocketMqMessage event) {
+    static Message createMessage(Properties properties, RocketMqMessage event) {
         if (event == null) {
             throw new RocketMqException("事件不允许为空！");
         }
@@ -261,7 +310,15 @@ public class RocketMqTemplate {
             throw new RocketMqException("Domain不允许为空！");
         }
 
-        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
+        int clusterType = (int) properties.getOrDefault(RocketMqConstants.CLUSTER_TYPE, RocketMqClusterType.ALIYUN.getType());
+
+        Message message;
+        if (RocketMqClusterType.ALIYUN.getType() == clusterType) {
+            message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
+        } else {
+            message = new ApacheMessage(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
+        }
+
         message.setKey(event.generateTxId());
 
         return message;

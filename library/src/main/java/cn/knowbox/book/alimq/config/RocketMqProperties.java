@@ -1,5 +1,6 @@
 package cn.knowbox.book.alimq.config;
 
+import cn.knowbox.book.alimq.producer.RocketMqClusterType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -44,5 +45,12 @@ public class RocketMqProperties {
      * tag后缀
      */
     private String tagSuffix;
+
+    /**
+     * 集群类型，默认ali rocketMq
+     * <p>
+     * 0为ali，1为apache
+     */
+    private int clusterType = RocketMqClusterType.ALIYUN.getType();
 
 }

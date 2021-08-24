@@ -94,9 +94,9 @@ public class RocketMqOrderTemplate {
      * @param sharding 分区顺序消息中区分不同分区的关键字段，sharding key 于普通消息的 key 是完全不同的概念。
      */
     public SendResult send(RocketMqMessage event, String sharding) {
-        log.info("sendOrder [message：{}, sharding：{}]", event.toString(), sharding);
+        log.info("sendOrder [message：{}, sharding：{}]", event, sharding);
 
-        return orderProducer.send(RocketMqTemplate.createMessage(event), sharding);
+        return orderProducer.send(RocketMqTemplate.createMessage(orderProducer.getProperties(), event), sharding);
     }
 
     private String format(Object domain) {

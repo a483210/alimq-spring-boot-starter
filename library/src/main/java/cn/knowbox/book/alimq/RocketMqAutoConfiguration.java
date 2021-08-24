@@ -1,6 +1,7 @@
 package cn.knowbox.book.alimq;
 
 import cn.knowbox.book.alimq.config.RocketMqProperties;
+import cn.knowbox.book.alimq.consts.RocketMqConstants;
 import cn.knowbox.book.alimq.consumer.ConsumerProcessor;
 import cn.knowbox.book.alimq.parser.JacksonMqParser;
 import cn.knowbox.book.alimq.parser.MqParser;
@@ -111,6 +112,8 @@ public class RocketMqAutoConfiguration {
         properties.put(PropertyKeyConst.AccessKey, rocketMqProperties.getAccessKey());
         properties.put(PropertyKeyConst.SecretKey, rocketMqProperties.getSecretKey());
         properties.put(PropertyKeyConst.NAMESRV_ADDR, rocketMqProperties.getAddress());
+        properties.put(RocketMqConstants.CLUSTER_TYPE, rocketMqProperties.getClusterType());
+
         return properties;
     }
 

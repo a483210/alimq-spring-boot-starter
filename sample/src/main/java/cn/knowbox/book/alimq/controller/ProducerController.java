@@ -8,10 +8,7 @@ import cn.knowbox.book.alimq.producer.template.RocketMqTransactionTemplate;
 import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +47,28 @@ public class ProducerController {
         }
 
         rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE_LIST, list);
+
+        return "success";
+    }
+
+    @PostMapping(value = "/sendDelay/{content}")
+    public String delaySingleMessage(@PathVariable("content") String content,
+                                     @RequestParam(value = "delay", required = false) Long delay) {
+        if (StringUtils.isEmpty(content)) {
+            return "failure";
+        }
+
+        SingleMessage singleMessage = new SingleMessage();
+        singleMessage.setMsgId(UUID.randomUUID().toString());
+        singleMessage.setContent(content);
+
+        if (delay == null) {
+            rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage, 5000L);
+        } else if (delay <= 0L) {
+            rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage);
+        } else {
+            rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage, delay);
+        }
 
         return "success";
     }
