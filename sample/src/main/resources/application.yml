@@ -3,9 +3,13 @@ server:
 
 aliyun:
   mq:
-    address: http://localhost:30076
-    access-key: nil
-    secret-key: nil
+    #本地ApacheRocketMQ集群部署时
+    #address: http://localhost:30076
+    #access-key: nil
+    #secret-key: nil
+    address: 你的mq地址
+    access-key: 你的key
+    secret-key: 你的key
     tag-suffix: -dev
     cluster-type: 1
     producer:
