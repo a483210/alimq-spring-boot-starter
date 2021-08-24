@@ -23,7 +23,7 @@ public enum RocketMqOrderType {
      */
     TAG(3);
 
-    private int type;
+    private final int type;
 
     RocketMqOrderType(int code) {
         this.type = code;

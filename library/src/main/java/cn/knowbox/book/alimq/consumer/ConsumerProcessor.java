@@ -1,9 +1,13 @@
 package cn.knowbox.book.alimq.consumer;
 
+import cn.knowbox.book.alimq.annotation.RocketMqConsume;
+import cn.knowbox.book.alimq.config.RocketMqProperties;
+import cn.knowbox.book.alimq.error.RocketMqException;
+import cn.knowbox.book.alimq.parser.MqParser;
+import cn.knowbox.book.alimq.utils.RocketMqUtil;
 import com.aliyun.openservices.ons.api.Consumer;
 import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
-
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -15,12 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import cn.knowbox.book.alimq.annotation.RocketMqConsume;
-import cn.knowbox.book.alimq.config.RocketMqProperties;
-import cn.knowbox.book.alimq.error.RocketMqException;
-import cn.knowbox.book.alimq.parser.MqParser;
-import cn.knowbox.book.alimq.utils.RocketMqUtil;
-
 /**
  * 消费者
  *
@@ -28,10 +26,10 @@ import cn.knowbox.book.alimq.utils.RocketMqUtil;
  */
 public class ConsumerProcessor implements ApplicationContextAware {
 
-    private MqParser mqParser;
-    private RocketMqProperties properties;
+    private final MqParser mqParser;
+    private final RocketMqProperties properties;
 
-    private Map<String, Consumer> consumers;
+    private final Map<String, Consumer> consumers;
 
     public ConsumerProcessor(MqParser mqParser, RocketMqProperties properties) {
         this.mqParser = mqParser;
@@ -93,7 +91,7 @@ public class ConsumerProcessor implements ApplicationContextAware {
         return consumer;
     }
 
-    public void shutdown() {
+    private void shutdown() {
         if (CollectionUtils.isEmpty(consumers)) {
             return;
         }
@@ -108,12 +106,22 @@ public class ConsumerProcessor implements ApplicationContextAware {
         consumers.clear();
     }
 
+    /**
+     * 是否全部成功订阅的
+     *
+     * @return bool
+     */
     public boolean isStarted() {
         return consumers.values()
                 .stream()
                 .allMatch(Consumer::isStarted);
     }
 
+    /**
+     * 获取消费者状态
+     *
+     * @return Map<GroupId, 是否成功订阅>
+     */
     public Map<String, Boolean> getStatus() {
         if (CollectionUtils.isEmpty(consumers)) {
             return new HashMap<>();
@@ -121,9 +129,8 @@ public class ConsumerProcessor implements ApplicationContextAware {
 
         Map<String, Boolean> map = new HashMap<>();
 
-        consumers.forEach((name, consumer) -> {
-            map.put(name, consumer.isStarted());
-        });
+        consumers.forEach((name, consumer) ->
+                map.put(name, consumer.isStarted()));
 
         return map;
     }

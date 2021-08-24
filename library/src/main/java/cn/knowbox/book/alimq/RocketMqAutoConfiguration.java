@@ -1,19 +1,5 @@
 package cn.knowbox.book.alimq;
 
-import com.aliyun.openservices.ons.api.PropertyKeyConst;
-import com.aliyun.openservices.ons.api.bean.OrderProducerBean;
-import com.aliyun.openservices.ons.api.bean.ProducerBean;
-import com.aliyun.openservices.ons.api.bean.TransactionProducerBean;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
-
-import java.util.Properties;
-
 import cn.knowbox.book.alimq.config.RocketMqProperties;
 import cn.knowbox.book.alimq.consumer.ConsumerProcessor;
 import cn.knowbox.book.alimq.parser.JacksonMqParser;
@@ -23,7 +9,19 @@ import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.template.RocketMqOrderTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTransactionTemplate;
+import com.aliyun.openservices.ons.api.PropertyKeyConst;
+import com.aliyun.openservices.ons.api.bean.OrderProducerBean;
+import com.aliyun.openservices.ons.api.bean.ProducerBean;
+import com.aliyun.openservices.ons.api.bean.TransactionProducerBean;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
+
+import java.util.Properties;
 
 /**
  * 初始化(生成|消费)相关配置
@@ -36,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RocketMqAutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(MqParser.class)
     public MqParser mqParser() {
         return new JacksonMqParser();
     }

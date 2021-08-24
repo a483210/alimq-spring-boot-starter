@@ -9,6 +9,11 @@ import org.springframework.lang.NonNull;
  */
 public interface RocketMqListener<T> {
 
+    /**
+     * 消费
+     *
+     * @param message 消息
+     */
     void onMessage(@NonNull T message);
 
 }

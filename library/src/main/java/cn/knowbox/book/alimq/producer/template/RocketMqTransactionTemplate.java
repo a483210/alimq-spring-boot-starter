@@ -22,8 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RocketMqTransactionTemplate {
 
-    private MqParser mqParser;
-    private TransactionProducerBean transactionProducer;
+    private final MqParser mqParser;
+    private final TransactionProducerBean transactionProducer;
 
     public RocketMqTransactionTemplate(MqParser mqParser, TransactionProducerBean transactionProducer) {
         this.mqParser = mqParser;
@@ -134,5 +134,4 @@ public class RocketMqTransactionTemplate {
     private String format(Object domain) {
         return RocketMqTemplate.format(mqParser, domain);
     }
-
 }

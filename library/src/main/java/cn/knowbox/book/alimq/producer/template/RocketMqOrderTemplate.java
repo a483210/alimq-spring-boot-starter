@@ -17,8 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RocketMqOrderTemplate {
 
-    private MqParser mqParser;
-    private OrderProducerBean orderProducer;
+    private final MqParser mqParser;
+    private final OrderProducerBean orderProducer;
 
     public RocketMqOrderTemplate(MqParser mqParser, OrderProducerBean orderProducer) {
         this.mqParser = mqParser;

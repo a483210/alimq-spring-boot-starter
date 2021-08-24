@@ -42,5 +42,4 @@ public class JacksonMqParser implements MqParser {
             return null;
         }
     }
-
 }

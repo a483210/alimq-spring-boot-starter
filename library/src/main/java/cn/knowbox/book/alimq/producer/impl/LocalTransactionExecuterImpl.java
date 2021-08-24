@@ -21,10 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LocalTransactionExecuterImpl<T> implements LocalTransactionExecuter {
 
-    private MqParser mqParser;
+    private final MqParser mqParser;
 
-    private TransactionExecuter<T> transactionExecuter;
-    private Class<T> clsType;
+    private final TransactionExecuter<T> transactionExecuter;
+    private final Class<T> clsType;
 
     public LocalTransactionExecuterImpl(MqParser mqParser, TransactionExecuter<T> transactionExecuter, Class<T> clsType) {
         this.mqParser = mqParser;

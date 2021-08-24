@@ -1,22 +1,20 @@
 package cn.knowbox.book.alimq.producer.impl;
 
-import com.aliyun.openservices.ons.api.Message;
-import com.aliyun.openservices.ons.api.transaction.LocalTransactionChecker;
-import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
-
-import org.springframework.util.SerializationUtils;
-
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.message.TransactionMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionChecker;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
+import com.aliyun.openservices.ons.api.Message;
+import com.aliyun.openservices.ons.api.transaction.LocalTransactionChecker;
+import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.SerializationUtils;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 默认的本地事务状态检测器实现
@@ -26,10 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
 
-    private MqParser mqParser;
+    private final MqParser mqParser;
 
-    private Map<String, TransactionChecker<?>> transactionChecks;
-    private Map<String, Type> checkTypes;
+    private final Map<String, TransactionChecker<?>> transactionChecks;
+    private final Map<String, Type> checkTypes;
 
     public LocalTransactionCheckerImpl(MqParser mqParser) {
         this.mqParser = mqParser;

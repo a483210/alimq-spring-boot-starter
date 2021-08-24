@@ -19,7 +19,7 @@ import cn.knowbox.book.alimq.utils.RocketMqUtil;
  */
 public class TransactionCheckerProcessor implements ApplicationContextAware {
 
-    private LocalTransactionCheckerImpl checkerImpl;
+    private final LocalTransactionCheckerImpl checkerImpl;
 
     public TransactionCheckerProcessor(TransactionProducerBean transactionProducer) {
         checkerImpl = (LocalTransactionCheckerImpl) transactionProducer.getLocalTransactionChecker();
@@ -45,5 +45,4 @@ public class TransactionCheckerProcessor implements ApplicationContextAware {
             }
         }
     }
-
 }

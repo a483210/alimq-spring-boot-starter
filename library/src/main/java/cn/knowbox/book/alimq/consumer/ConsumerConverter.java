@@ -1,22 +1,20 @@
 package cn.knowbox.book.alimq.consumer;
 
-import com.aliyun.openservices.ons.api.Action;
-import com.aliyun.openservices.ons.api.ConsumeContext;
-import com.aliyun.openservices.ons.api.Message;
-import com.aliyun.openservices.ons.api.MessageListener;
-
-import org.springframework.aop.support.AopUtils;
-import org.springframework.util.SerializationUtils;
-import org.springframework.util.StringUtils;
-
-import java.lang.reflect.Type;
-
 import cn.knowbox.book.alimq.annotation.RocketMqConsume;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
+import com.aliyun.openservices.ons.api.Action;
+import com.aliyun.openservices.ons.api.ConsumeContext;
+import com.aliyun.openservices.ons.api.Message;
+import com.aliyun.openservices.ons.api.MessageListener;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.util.SerializationUtils;
+import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Type;
 
 /**
  * mq消费转换器，消息消费逻辑处理(如果抛出异常，则重新入队列)
@@ -26,11 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ConsumerConverter<T> implements MessageListener {
 
-    private MqParser mqParser;
+    private final MqParser mqParser;
 
-    private Type type;
-    private RocketMqListener<T> rocketMqListener;
-    private Class<? extends Throwable>[] reconsumeFor;
+    private final Type type;
+    private final RocketMqListener<T> rocketMqListener;
+    private final Class<? extends Throwable>[] reconsumeFor;
 
     ConsumerConverter(MqParser mqParser, RocketMqListener<T> rocketMqListener, RocketMqConsume rocketMqConsume) {
         Class<?> listenerCls = AopUtils.getTargetClass(rocketMqListener);

@@ -10,9 +10,22 @@ import lombok.Data;
 @Data
 public class ProducerProperty {
 
-    private String groupId;
+    /**
+     * 是否启用生产者
+     */
     private boolean enabled;
+    /**
+     * 是否启用顺序生产者
+     */
     private boolean orderEnabled;
+    /**
+     * 是否启用事务生产者
+     */
     private boolean transactionEnabled;
+
+    /**
+     * 生产者的groupId
+     */
+    private String groupId;
 
 }

@@ -30,8 +30,8 @@ public class RocketMqTemplate {
 
     private static final long DELAY_DAY_7 = 7 * 24 * 60 * 60 * 1000;
 
-    private MqParser mqParser;
-    private ProducerBean producer;
+    private final MqParser mqParser;
+    private final ProducerBean producer;
 
     public RocketMqTemplate(MqParser mqParser, ProducerBean producer) {
         this.mqParser = mqParser;
@@ -295,5 +295,4 @@ public class RocketMqTemplate {
             throw new RocketMqException("发送事件不能大于7天时间！");
         }
     }
-
 }

@@ -1,0 +1,240 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: rocketmq
+  name: broker1-config
+data:
+  broker-a.conf: >
+    #所属集群名字
+
+    brokerClusterName=DefaultCluster
+
+    #broker名字
+
+    brokerName=broker-a
+
+    #0 表示Master，>0 表示Slave
+
+    brokerId=0
+
+    #Broker 的角色，异步复制Master
+
+    brokerRole=ASYNC_MASTER
+
+    #刷盘方式，异步刷盘
+
+    flushDiskType=ASYNC_FLUSH
+
+    #nameServer地址，分号分割
+
+    namesrvAddr=rocketmq-0.rocketmq.rocketmq.svc.cluster.local:9876;rocketmq2-0.rocketmq2.rocketmq.svc.cluster.local:9876
+
+    #broker监听的IP，对外暴露的地址
+
+    brokerIP1=192.168.8.108
+
+    #slave同步的IP，只有master需要设置
+
+    brokerIP2=rocketmq-0.rocketmq.rocketmq.svc.cluster.local
+
+    #Broker 对外服务的监听端口
+
+    listenPort=30911
+
+    #在发送消息时，自动创建服务器不存在的topic，默认创建的队列数
+
+    defaultTopicQueueNums=4
+
+    #是否允许 Broker 自动创建Topic
+
+    autoCreateTopicEnable=true
+
+    #是否允许 Broker 自动创建订阅组
+
+    autoCreateSubscriptionGroup=true
+
+    #删除文件时间点，默认凌晨4点
+
+    deleteWhen=04
+
+    #文件保留时间，默认48小时
+
+    fileReservedTime=120
+
+    #commitLog每个文件的大小默认1G
+
+    mapedFileSizeCommitLog=1073741824
+
+    #ConsumeQueue每个文件默认存30W条
+
+    mapedFileSizeConsumeQueue=300000
+
+    #检测物理文件磁盘空间
+
+    diskMaxUsedSpaceRatio=88
+
+    #存储路径
+
+    storePathRootDir=/home/rocketmq/store
+
+    #限制的消息大小
+
+    maxMessageSize=65536
+
+    #延迟消息等级
+
+    messageDelayLevel=1s 2s 3s 4s 5s 6s 7s 8s 9s 10s 11s 12s 13s 14s 15s 16s 17s 18s 19s 20s 21s 22s 23s 24s 25s 26s 27s 28s 29s 30s 31s 32s 33s 34s 35s 36s 37s 38s 39s 40s 41s 42s 43s 44s 45s 46s 47s 48s 49s 50s 51s 52s 53s 54s 55s 56s 57s 58s 59s 60s 61s 62s 63s 64s 65s 66s 67s 68s 69s 70s 71s 72s 73s 74s 75s 76s 77s 78s 79s 80s 81s 82s 83s 84s 85s 86s 87s 88s 89s 90s 91s 92s 93s 94s 95s 96s 97s 98s 99s 100s 101s 102s 103s 104s 105s 106s 107s 108s 109s 110s 111s 112s 113s 114s 115s 116s 117s 118s 119s 120s 121s 122s 123s 124s 125s 126s 127s 128s 129s 130s 131s 132s 133s 134s 135s 136s 137s 138s 139s 140s 141s 142s 143s 144s 145s 146s 147s 148s 149s 150s 151s 152s 153s 154s 155s 156s 157s 158s 159s 160s 161s 162s 163s 164s 165s 166s 167s 168s 169s 170s 171s 172s 173s 174s 175s 176s 177s 178s 179s 180s 181s 182s 183s 184s 185s 186s 187s 188s 189s 190s 191s 192s 193s 194s 195s 196s 197s 198s 199s 200s 201s 202s 203s 204s 205s 206s 207s 208s 209s 210s 211s 212s 213s 214s 215s 216s 217s 218s 219s 220s 221s 222s 223s 224s 225s 226s 227s 228s 229s 230s 231s 232s 233s 234s 235s 236s 237s 238s 239s 240s 241s 242s 243s 244s 245s 246s 247s 248s 249s 250s 251s 252s 253s 254s 255s 256s 257s 258s 259s 260s 261s 262s 263s 264s 265s 266s 267s 268s 269s 270s 271s 272s 273s 274s 275s 276s 277s 278s 279s 280s 281s 282s 283s 284s 285s 286s 287s 288s 289s 290s 291s 292s 293s 294s 295s 296s 297s 298s 299s 300s 301s 302s 303s 304s 305s 306s 307s 308s 309s 310s 311s 312s 313s 314s 315s 316s 317s 318s 319s 320s 321s 322s 323s 324s 325s 326s 327s 328s 329s 330s 331s 332s 333s 334s 335s 336s 337s 338s 339s 340s 341s 342s 343s 344s 345s 346s 347s 348s 349s 350s 351s 352s 353s 354s 355s 356s 357s 358s 359s 360s 361s 362s 363s 364s 365s 366s 367s 368s 369s 370s 371s 372s 373s 374s 375s 376s 377s 378s 379s 380s 381s 382s 383s 384s 385s 386s 387s 388s 389s 390s 391s 392s 393s 394s 395s 396s 397s 398s 399s 400s 401s 402s 403s 404s 405s 406s 407s 408s 409s 410s 411s 412s 413s 414s 415s 416s 417s 418s 419s 420s 421s 422s 423s 424s 425s 426s 427s 428s 429s 430s 431s 432s 433s 434s 435s 436s 437s 438s 439s 440s 441s 442s 443s 444s 445s 446s 447s 448s 449s 450s 451s 452s 453s 454s 455s 456s 457s 458s 459s 460s 461s 462s 463s 464s 465s 466s 467s 468s 469s 470s 471s 472s 473s 474s 475s 476s 477s 478s 479s 480s 481s 482s 483s 484s 485s 486s 487s 488s 489s 490s 491s 492s 493s 494s 495s 496s 497s 498s 499s 500s 501s 502s 503s 504s 505s 506s 507s 508s 509s 510s 511s 512s 513s 514s 515s 516s 517s 518s 519s 520s 521s 522s 523s 524s 525s 526s 527s 528s 529s 530s 531s 532s 533s 534s 535s 536s 537s 538s 539s 540s 541s 542s 543s 544s 545s 546s 547s 548s 549s 550s 551s 552s 553s 554s 555s 556s 557s 558s 559s 560s 561s 562s 563s 564s 565s 566s 567s 568s 569s 570s 571s 572s 573s 574s 575s 576s 577s 578s 579s 580s 581s 582s 583s 584s 585s 586s 587s 588s 589s 590s 591s 592s 593s 594s 595s 596s 597s 598s 599s 600s
+
+  broker-a-s.conf: >
+    #所属集群名字
+
+    brokerClusterName=DefaultCluster
+
+    #broker名字
+
+    brokerName=broker-a
+
+    #0 表示Master，>0 表示Slave
+
+    brokerId=1
+
+    #Broker 的角色
+
+    brokerRole=SLAVE
+
+    #刷盘方式，异步刷盘
+
+    flushDiskType=ASYNC_FLUSH
+
+    #nameServer地址，分号分割
+
+    namesrvAddr=rocketmq-0.rocketmq.rocketmq.svc.cluster.local:9876;rocketmq2-0.rocketmq2.rocketmq.svc.cluster.local:9876
+
+    #broker监听的IP，对外暴露的地址
+
+    brokerIP1=192.168.8.108
+
+    #Broker 对外服务的监听端口
+
+    listenPort=30921
+
+    #在发送消息时，自动创建服务器不存在的topic，默认创建的队列数
+
+    defaultTopicQueueNums=4
+
+    #是否允许 Broker 自动创建Topic
+
+    autoCreateTopicEnable=true
+
+    #是否允许 Broker 自动创建订阅组
+
+    autoCreateSubscriptionGroup=true
+
+    #删除文件时间点，默认凌晨4点
+
+    deleteWhen=04
+
+    #文件保留时间，默认48小时
+
+    fileReservedTime=120
+
+    #commitLog每个文件的大小默认1G
+
+    mapedFileSizeCommitLog=1073741824
+
+    #ConsumeQueue每个文件默认存30W条
+
+    mapedFileSizeConsumeQueue=300000
+
+    #检测物理文件磁盘空间
+
+    diskMaxUsedSpaceRatio=88
+
+    #存储路径
+
+    storePathRootDir=/home/rocketmq/store
+
+    #限制的消息大小
+
+    maxMessageSize=65536
+
+    #延迟消息等级
+
+    messageDelayLevel=1s 2s 3s 4s 5s 6s 7s 8s 9s 10s 11s 12s 13s 14s 15s 16s 17s 18s 19s 20s 21s 22s 23s 24s 25s 26s 27s 28s 29s 30s 31s 32s 33s 34s 35s 36s 37s 38s 39s 40s 41s 42s 43s 44s 45s 46s 47s 48s 49s 50s 51s 52s 53s 54s 55s 56s 57s 58s 59s 60s 61s 62s 63s 64s 65s 66s 67s 68s 69s 70s 71s 72s 73s 74s 75s 76s 77s 78s 79s 80s 81s 82s 83s 84s 85s 86s 87s 88s 89s 90s 91s 92s 93s 94s 95s 96s 97s 98s 99s 100s 101s 102s 103s 104s 105s 106s 107s 108s 109s 110s 111s 112s 113s 114s 115s 116s 117s 118s 119s 120s 121s 122s 123s 124s 125s 126s 127s 128s 129s 130s 131s 132s 133s 134s 135s 136s 137s 138s 139s 140s 141s 142s 143s 144s 145s 146s 147s 148s 149s 150s 151s 152s 153s 154s 155s 156s 157s 158s 159s 160s 161s 162s 163s 164s 165s 166s 167s 168s 169s 170s 171s 172s 173s 174s 175s 176s 177s 178s 179s 180s 181s 182s 183s 184s 185s 186s 187s 188s 189s 190s 191s 192s 193s 194s 195s 196s 197s 198s 199s 200s 201s 202s 203s 204s 205s 206s 207s 208s 209s 210s 211s 212s 213s 214s 215s 216s 217s 218s 219s 220s 221s 222s 223s 224s 225s 226s 227s 228s 229s 230s 231s 232s 233s 234s 235s 236s 237s 238s 239s 240s 241s 242s 243s 244s 245s 246s 247s 248s 249s 250s 251s 252s 253s 254s 255s 256s 257s 258s 259s 260s 261s 262s 263s 264s 265s 266s 267s 268s 269s 270s 271s 272s 273s 274s 275s 276s 277s 278s 279s 280s 281s 282s 283s 284s 285s 286s 287s 288s 289s 290s 291s 292s 293s 294s 295s 296s 297s 298s 299s 300s 301s 302s 303s 304s 305s 306s 307s 308s 309s 310s 311s 312s 313s 314s 315s 316s 317s 318s 319s 320s 321s 322s 323s 324s 325s 326s 327s 328s 329s 330s 331s 332s 333s 334s 335s 336s 337s 338s 339s 340s 341s 342s 343s 344s 345s 346s 347s 348s 349s 350s 351s 352s 353s 354s 355s 356s 357s 358s 359s 360s 361s 362s 363s 364s 365s 366s 367s 368s 369s 370s 371s 372s 373s 374s 375s 376s 377s 378s 379s 380s 381s 382s 383s 384s 385s 386s 387s 388s 389s 390s 391s 392s 393s 394s 395s 396s 397s 398s 399s 400s 401s 402s 403s 404s 405s 406s 407s 408s 409s 410s 411s 412s 413s 414s 415s 416s 417s 418s 419s 420s 421s 422s 423s 424s 425s 426s 427s 428s 429s 430s 431s 432s 433s 434s 435s 436s 437s 438s 439s 440s 441s 442s 443s 444s 445s 446s 447s 448s 449s 450s 451s 452s 453s 454s 455s 456s 457s 458s 459s 460s 461s 462s 463s 464s 465s 466s 467s 468s 469s 470s 471s 472s 473s 474s 475s 476s 477s 478s 479s 480s 481s 482s 483s 484s 485s 486s 487s 488s 489s 490s 491s 492s 493s 494s 495s 496s 497s 498s 499s 500s 501s 502s 503s 504s 505s 506s 507s 508s 509s 510s 511s 512s 513s 514s 515s 516s 517s 518s 519s 520s 521s 522s 523s 524s 525s 526s 527s 528s 529s 530s 531s 532s 533s 534s 535s 536s 537s 538s 539s 540s 541s 542s 543s 544s 545s 546s 547s 548s 549s 550s 551s 552s 553s 554s 555s 556s 557s 558s 559s 560s 561s 562s 563s 564s 565s 566s 567s 568s 569s 570s 571s 572s 573s 574s 575s 576s 577s 578s 579s 580s 581s 582s 583s 584s 585s 586s 587s 588s 589s 590s 591s 592s 593s 594s 595s 596s 597s 598s 599s 600s
+
+  broker-a-s2.conf: >
+    #所属集群名字
+
+    brokerClusterName=DefaultCluster
+
+    #broker名字
+
+    brokerName=broker-a
+
+    #0 表示Master，>0 表示Slave
+
+    brokerId=2
+
+    #Broker 的角色
+
+    brokerRole=SLAVE
+
+    #刷盘方式，异步刷盘
+
+    flushDiskType=ASYNC_FLUSH
+
+    #nameServer地址，分号分割
+
+    namesrvAddr=rocketmq-0.rocketmq.rocketmq.svc.cluster.local:9876;rocketmq2-0.rocketmq2.rocketmq.svc.cluster.local:9876
+
+    #broker监听的IP，对外暴露的地址
+
+    brokerIP1=192.168.8.108
+
+    #Broker 对外服务的监听端口
+
+    listenPort=30931
+
+    #在发送消息时，自动创建服务器不存在的topic，默认创建的队列数
+
+    defaultTopicQueueNums=4
+
+    #是否允许 Broker 自动创建Topic
+
+    autoCreateTopicEnable=true
+
+    #是否允许 Broker 自动创建订阅组
+
+    autoCreateSubscriptionGroup=true
+
+    #删除文件时间点，默认凌晨4点
+
+    deleteWhen=04
+
+    #文件保留时间，默认48小时
+
+    fileReservedTime=120
+
+    #commitLog每个文件的大小默认1G
+
+    mapedFileSizeCommitLog=1073741824
+
+    #ConsumeQueue每个文件默认存30W条
+
+    mapedFileSizeConsumeQueue=300000
+
+    #检测物理文件磁盘空间
+
+    diskMaxUsedSpaceRatio=88
+
+    #存储路径
+
+    storePathRootDir=/home/rocketmq/store
+
+    #限制的消息大小
+
+    maxMessageSize=65536
+
+    #延迟消息等级
+
+    messageDelayLevel=1s 2s 3s 4s 5s 6s 7s 8s 9s 10s 11s 12s 13s 14s 15s 16s 17s 18s 19s 20s 21s 22s 23s 24s 25s 26s 27s 28s 29s 30s 31s 32s 33s 34s 35s 36s 37s 38s 39s 40s 41s 42s 43s 44s 45s 46s 47s 48s 49s 50s 51s 52s 53s 54s 55s 56s 57s 58s 59s 60s 61s 62s 63s 64s 65s 66s 67s 68s 69s 70s 71s 72s 73s 74s 75s 76s 77s 78s 79s 80s 81s 82s 83s 84s 85s 86s 87s 88s 89s 90s 91s 92s 93s 94s 95s 96s 97s 98s 99s 100s 101s 102s 103s 104s 105s 106s 107s 108s 109s 110s 111s 112s 113s 114s 115s 116s 117s 118s 119s 120s 121s 122s 123s 124s 125s 126s 127s 128s 129s 130s 131s 132s 133s 134s 135s 136s 137s 138s 139s 140s 141s 142s 143s 144s 145s 146s 147s 148s 149s 150s 151s 152s 153s 154s 155s 156s 157s 158s 159s 160s 161s 162s 163s 164s 165s 166s 167s 168s 169s 170s 171s 172s 173s 174s 175s 176s 177s 178s 179s 180s 181s 182s 183s 184s 185s 186s 187s 188s 189s 190s 191s 192s 193s 194s 195s 196s 197s 198s 199s 200s 201s 202s 203s 204s 205s 206s 207s 208s 209s 210s 211s 212s 213s 214s 215s 216s 217s 218s 219s 220s 221s 222s 223s 224s 225s 226s 227s 228s 229s 230s 231s 232s 233s 234s 235s 236s 237s 238s 239s 240s 241s 242s 243s 244s 245s 246s 247s 248s 249s 250s 251s 252s 253s 254s 255s 256s 257s 258s 259s 260s 261s 262s 263s 264s 265s 266s 267s 268s 269s 270s 271s 272s 273s 274s 275s 276s 277s 278s 279s 280s 281s 282s 283s 284s 285s 286s 287s 288s 289s 290s 291s 292s 293s 294s 295s 296s 297s 298s 299s 300s 301s 302s 303s 304s 305s 306s 307s 308s 309s 310s 311s 312s 313s 314s 315s 316s 317s 318s 319s 320s 321s 322s 323s 324s 325s 326s 327s 328s 329s 330s 331s 332s 333s 334s 335s 336s 337s 338s 339s 340s 341s 342s 343s 344s 345s 346s 347s 348s 349s 350s 351s 352s 353s 354s 355s 356s 357s 358s 359s 360s 361s 362s 363s 364s 365s 366s 367s 368s 369s 370s 371s 372s 373s 374s 375s 376s 377s 378s 379s 380s 381s 382s 383s 384s 385s 386s 387s 388s 389s 390s 391s 392s 393s 394s 395s 396s 397s 398s 399s 400s 401s 402s 403s 404s 405s 406s 407s 408s 409s 410s 411s 412s 413s 414s 415s 416s 417s 418s 419s 420s 421s 422s 423s 424s 425s 426s 427s 428s 429s 430s 431s 432s 433s 434s 435s 436s 437s 438s 439s 440s 441s 442s 443s 444s 445s 446s 447s 448s 449s 450s 451s 452s 453s 454s 455s 456s 457s 458s 459s 460s 461s 462s 463s 464s 465s 466s 467s 468s 469s 470s 471s 472s 473s 474s 475s 476s 477s 478s 479s 480s 481s 482s 483s 484s 485s 486s 487s 488s 489s 490s 491s 492s 493s 494s 495s 496s 497s 498s 499s 500s 501s 502s 503s 504s 505s 506s 507s 508s 509s 510s 511s 512s 513s 514s 515s 516s 517s 518s 519s 520s 521s 522s 523s 524s 525s 526s 527s 528s 529s 530s 531s 532s 533s 534s 535s 536s 537s 538s 539s 540s 541s 542s 543s 544s 545s 546s 547s 548s 549s 550s 551s 552s 553s 554s 555s 556s 557s 558s 559s 560s 561s 562s 563s 564s 565s 566s 567s 568s 569s 570s 571s 572s 573s 574s 575s 576s 577s 578s 579s 580s 581s 582s 583s 584s 585s 586s 587s 588s 589s 590s 591s 592s 593s 594s 595s 596s 597s 598s 599s 600s

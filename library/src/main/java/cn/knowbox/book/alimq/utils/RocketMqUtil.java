@@ -98,6 +98,5 @@ public class RocketMqUtil {
 
         return typeParams[0];
     }
-
 }
 

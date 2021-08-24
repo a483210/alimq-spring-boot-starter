@@ -1,15 +1,11 @@
 package cn.knowbox.book.alimq.message;
 
+import cn.knowbox.book.alimq.utils.RocketMqUtil;
 import com.aliyun.openservices.shade.io.netty.util.internal.StringUtil;
-
-import org.springframework.util.StringUtils;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.UUID;
-
-import cn.knowbox.book.alimq.error.RocketMqException;
-import cn.knowbox.book.alimq.utils.RocketMqUtil;
-import lombok.Data;
 
 /**
  * MQ统一事件对象，用在跨业务整合中
@@ -78,5 +74,4 @@ public class RocketMqMessage implements Serializable {
         }
         return txId;
     }
-
 }

@@ -1,13 +1,15 @@
+server:
+  port: 8089
+
 aliyun:
   mq:
-    address: 你的mq地址
-    access-key: 你的key
-    secret-key: 你的key
+    address: http://localhost:30076
+    access-key: nil
+    secret-key: nil
+    tag-suffix: -dev
     producer:
       enabled: true
       order-enabled: true
       transaction-enabled: true
-      group-id: 你的Group
     consumer:
       enabled: true
-      group-id: 你的Group

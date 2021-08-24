@@ -1,7 +1,11 @@
 package cn.knowbox.book.alimq.controller;
 
+import cn.knowbox.book.alimq.model.SingleMessage;
+import cn.knowbox.book.alimq.mq.MessageEvent;
+import cn.knowbox.book.alimq.producer.template.RocketMqOrderTemplate;
+import cn.knowbox.book.alimq.producer.template.RocketMqTemplate;
+import cn.knowbox.book.alimq.producer.template.RocketMqTransactionTemplate;
 import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,12 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import cn.knowbox.book.alimq.model.SingleMessage;
-import cn.knowbox.book.alimq.mq.MessageEvent;
-import cn.knowbox.book.alimq.producer.template.RocketMqOrderTemplate;
-import cn.knowbox.book.alimq.producer.template.RocketMqTemplate;
-import cn.knowbox.book.alimq.producer.template.RocketMqTransactionTemplate;
 
 /**
  * 配置测试
@@ -46,7 +44,7 @@ public class ProducerController {
         for (int i = 0; i < 10; i++) {
             SingleMessage singleMessage = new SingleMessage();
             singleMessage.setMsgId(UUID.randomUUID().toString());
-            singleMessage.setContent(content);
+            singleMessage.setContent(content + i);
 
             list.add(singleMessage);
         }
@@ -97,9 +95,7 @@ public class ProducerController {
         singleMessage.setContent(content);
 
         rocketMqTransactionTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage,
-                (message) -> {
-                    return TransactionStatus.Unknow;
-                });
+                message -> TransactionStatus.CommitTransaction);
 
         return "success";
     }

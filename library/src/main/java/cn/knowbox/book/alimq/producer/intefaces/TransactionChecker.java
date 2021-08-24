@@ -14,6 +14,12 @@ import cn.knowbox.book.alimq.message.TransactionMessage;
 @FunctionalInterface
 public interface TransactionChecker<T> {
 
+    /**
+     * 检查
+     *
+     * @param message 事务消息
+     * @return 状态
+     */
     TransactionStatus check(@NonNull TransactionMessage<T> message);
 
 }

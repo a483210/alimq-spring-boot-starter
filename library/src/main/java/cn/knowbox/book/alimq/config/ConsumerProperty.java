@@ -1,7 +1,5 @@
 package cn.knowbox.book.alimq.config;
 
-import java.util.List;
-
 import lombok.Data;
 
 /**
@@ -12,6 +10,9 @@ import lombok.Data;
 @Data
 public class ConsumerProperty {
 
+    /**
+     * 是否启用消费者
+     */
     private boolean enabled;
 
 }

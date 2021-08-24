@@ -1,0 +1,71 @@
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: rocketmq
+  name: rocketmq-console
+  labels:
+    app: rocketmq-console
+
+spec:
+  serviceName: rocketmq-console
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rocketmq-console
+  template:
+    metadata:
+      labels:
+        app: rocketmq-console
+    spec:
+      containers:
+        - name: rocketmq-console
+          image: apacherocketmq/rocketmq-console:2.0.0
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 450m
+              memory: 1024Mi
+            requests:
+              cpu: 400m
+              memory: 768Mi
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: JAVA_OPTS
+              value: -Drocketmq.config.namesrvAddr=rocketmq:9876;rocketmq2:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false -Duser.home=/root -Drocketmq.config.dataPath=/tmp/rocketmq-console/data -Xms768m -Xmx768m
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: vol-logs
+              mountPath: /root/logs
+            - name: vol-conf
+              mountPath: /tmp/rocketmq-console/data
+      volumes:
+        - name: vol-logs
+          hostPath:
+            path: /Volumes/Develop/rockate-cluster/temp/logs-console
+            type: Directory
+        - name: vol-conf
+          hostPath:
+            path: /Volumes/Develop/rockate-cluster/temp/config-console
+            type: Directory
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: rocketmq
+  name: rocketmq-console
+  labels:
+    app: rocketmq-console
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30075
+  selector:
+    app: rocketmq-console
