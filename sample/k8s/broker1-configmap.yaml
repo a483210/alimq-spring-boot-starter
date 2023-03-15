@@ -31,7 +31,7 @@ data:
 
     #broker监听的IP，对外暴露的地址
 
-    brokerIP1=192.168.8.108
+    brokerIP1=192.168.1.47
 
     #slave同步的IP，只有master需要设置
 
@@ -112,7 +112,7 @@ data:
 
     #broker监听的IP，对外暴露的地址
 
-    brokerIP1=192.168.8.108
+    brokerIP1=192.168.1.47
 
     #Broker 对外服务的监听端口
 
@@ -189,7 +189,7 @@ data:
 
     #broker监听的IP，对外暴露的地址
 
-    brokerIP1=192.168.8.108
+    brokerIP1=192.168.1.47
 
     #Broker 对外服务的监听端口
 

@@ -26,17 +26,17 @@ spec:
           resources:
             limits:
               cpu: 450m
-              memory: 2000Mi
+              memory: 1024Mi
             requests:
               cpu: 400m
-              memory: 2000Mi
+              memory: 512Mi
           env:
             - name: TZ
               value: Asia/Shanghai
             - name: JAVA_OPT
               value: -Duser.home=/home/rocketmq
             - name: JAVA_OPT_EXT
-              value:  -Xmn256m
+              value: -Xms512M -Xmx512M -Xmn256m
           command: ["sh","-c","mqnamesrv"]
           ports:
             - containerPort: 9876
@@ -50,16 +50,16 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              cpu: 440m
-              memory: 2000Mi
+              cpu: 450m
+              memory: 1024Mi
             requests:
               cpu: 400m
-              memory: 2000Mi
+              memory: 512Mi
           env:
             - name: TZ
               value: Asia/Shanghai
             - name: JAVA_OPT_EXT
-              value: -Duser.home=/home/rocketmq -Xms1024M -Xmx1024M -Xmn256m
+              value: -Duser.home=/home/rocketmq -Xms512M -Xmx512M -Xmn256m
           command: [ "sh","-c","mqbroker -c /etc/rocketmq/broker-a.conf" ]
           ports:
             - containerPort: 30909
@@ -78,15 +78,15 @@ spec:
           resources:
             limits:
               cpu: 450m
-              memory: 2000Mi
+              memory: 1024Mi
             requests:
               cpu: 400m
-              memory: 2000Mi
+              memory: 512Mi
           env:
             - name: TZ
               value: Asia/Shanghai
             - name: JAVA_OPT_EXT
-              value: -Duser.home=/home/rocketmq -Xms1024M -Xmx1024M -Xmn256m
+              value: -Duser.home=/home/rocketmq -Xms512M -Xmx512M -Xmn256m
           command: [ "sh","-c","mqbroker -c /etc/rocketmq/broker-a-s.conf" ]
           ports:
             - containerPort: 30919
@@ -105,15 +105,15 @@ spec:
           resources:
             limits:
               cpu: 450m
-              memory: 2000Mi
+              memory: 1024Mi
             requests:
               cpu: 400m
-              memory: 2000Mi
+              memory: 512Mi
           env:
             - name: TZ
               value: Asia/Shanghai
             - name: JAVA_OPT_EXT
-              value: -Duser.home=/home/rocketmq -Xms1024M -Xmx1024M -Xmn256m
+              value: -Duser.home=/home/rocketmq -Xms512M -Xmx512M -Xmn256m
           command: [ "sh","-c","mqbroker -c /etc/rocketmq/broker-a-s2.conf" ]
           ports:
             - containerPort: 30929
@@ -129,11 +129,11 @@ spec:
       volumes:
         - name: vol-logs
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/logs-1
+            path: /data/rocketmq/cluster/logs-1
             type: Directory
         - name: vol-store
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/store-1
+            path: /data/rocketmq/cluster/store-1
             type: Directory
         - name: vol-conf
           configMap:
@@ -141,29 +141,29 @@ spec:
 
         - name: vol-logs-a
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/logs-1a
+            path: /data/rocketmq/cluster/logs-1a
             type: Directory
         - name: vol-store-a
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/store-1a
+            path: /data/rocketmq/cluster/store-1a
             type: Directory
 
         - name: vol-logs-as
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/logs-1as
+            path: /data/rocketmq/cluster/logs-1as
             type: Directory
         - name: vol-store-as
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/store-1as
+            path: /data/rocketmq/cluster/store-1as
             type: Directory
 
         - name: vol-logs-as2
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/logs-1as2
+            path: /data/rocketmq/cluster/logs-1as2
             type: Directory
         - name: vol-store-as2
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/store-1as2
+            path: /data/rocketmq/cluster/store-1as2
             type: Directory
 
 ---

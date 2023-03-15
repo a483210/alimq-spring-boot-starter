@@ -45,11 +45,11 @@ spec:
       volumes:
         - name: vol-logs
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/logs-console
+            path: /data/rocketmq/cluster/logs-console
             type: Directory
         - name: vol-conf
           hostPath:
-            path: /Volumes/Develop/rockate-cluster/temp/config-console
+            path: /data/rocketmq/cluster/config-console
             type: Directory
 
 ---
