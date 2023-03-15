@@ -7,12 +7,12 @@ import org.springframework.lang.NonNull;
 import cn.knowbox.book.alimq.message.TransactionMessage;
 
 /**
- * 用作LocalTransactionExecuterImpl的构造器参数,用于执行本地事务操作
+ * 用作LocalTransactionExecutorImpl的构造器参数,用于执行本地事务操作
  *
  * @author Created by gold on 2019/10/4 16:00
  */
 @FunctionalInterface
-public interface TransactionExecuter<T> {
+public interface TransactionExecutor<T> {
 
     /**
      * 执行

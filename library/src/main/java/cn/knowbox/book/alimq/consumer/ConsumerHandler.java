@@ -17,29 +17,29 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Type;
 
 /**
- * mq消费转换器，消息消费逻辑处理(如果抛出异常，则重新入队列)
+ * mq消费处理器，消息消费逻辑处理(如果抛出异常，则重新入队列)
  *
  * @author Created by gold on 2019/10/4 15:52
  */
 @Slf4j
-public class ConsumerConverter<T> implements MessageListener {
+public class ConsumerHandler<T> implements MessageListener {
 
     private final MqParser mqParser;
 
     private final Type type;
-    private final RocketMqListener<T> rocketMqListener;
+    private final ConsumerListener<T> consumerListener;
     private final Class<? extends Throwable>[] reconsumeFor;
 
-    ConsumerConverter(MqParser mqParser, RocketMqListener<T> rocketMqListener, RocketMqConsume rocketMqConsume) {
-        Class<?> listenerCls = AopUtils.getTargetClass(rocketMqListener);
+    ConsumerHandler(MqParser mqParser, ConsumerListener<T> consumerListener, RocketMqConsume rocketMqConsume) {
+        Class<?> listenerCls = AopUtils.getTargetClass(consumerListener);
 
-        this.type = RocketMqUtil.parseType(listenerCls, RocketMqListener.class);
+        this.type = RocketMqUtil.parseType(listenerCls, ConsumerListener.class);
         if (type == null) {
             throw new RocketMqException(String.format("%s缺少泛型！", listenerCls.getSimpleName()));
         }
 
         this.mqParser = mqParser;
-        this.rocketMqListener = rocketMqListener;
+        this.consumerListener = consumerListener;
         this.reconsumeFor = rocketMqConsume.reconsumeFor();
     }
 
@@ -62,7 +62,7 @@ public class ConsumerConverter<T> implements MessageListener {
                 throw new NullPointerException("value null");
             }
 
-            rocketMqListener.onMessage(value);
+            consumerListener.onMessage(value);
             return Action.CommitMessage;
         } catch (Throwable throwable) {
             log.warn("consume message error msgId =" + message.getMsgID(), throwable);

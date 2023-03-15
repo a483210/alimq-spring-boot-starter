@@ -33,6 +33,10 @@ public class JacksonMqParser implements MqParser {
 
     @Override
     public <T> T parse(String json, Type type) {
+        if (type == String.class) {
+            return (T) json;
+        }
+
         try {
             JavaType javaType = TypeFactory.defaultInstance().constructType(type);
 

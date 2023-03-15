@@ -1,4 +1,4 @@
-package cn.knowbox.book.alimq.config;
+package cn.knowbox.book.alimq.properties;
 
 import lombok.Data;
 
@@ -13,7 +13,7 @@ public class ProducerProperty {
     /**
      * 是否启用生产者
      */
-    private boolean enabled;
+    private boolean enabled = true;
     /**
      * 是否启用顺序生产者
      */
@@ -27,5 +27,10 @@ public class ProducerProperty {
      * 生产者的groupId
      */
     private String groupId;
+
+    /**
+     * 生产者日志
+     */
+    private boolean logging = false;
 
 }

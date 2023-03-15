@@ -1,8 +1,8 @@
 package cn.knowbox.book.alimq.message;
 
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
-import com.aliyun.openservices.shade.io.netty.util.internal.StringUtil;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -24,8 +24,8 @@ public class RocketMqMessage implements Serializable {
      * @param domain 消息
      * @return message
      */
-    public static RocketMqMessage create(String topic, String domain) {
-        return new RocketMqMessage(topic, domain);
+    public static RocketMqMessage create(String topic, String tag, String domain) {
+        return new RocketMqMessage(topic, tag, domain);
     }
 
     /**
@@ -35,21 +35,23 @@ public class RocketMqMessage implements Serializable {
      * @param domain 消息
      * @return message
      */
-    public static RocketMqMessage create(IMessageEvent event, String domain) {
-        return new RocketMqMessage(event, domain);
+    public static RocketMqMessage create(IMessageEvent event, String topicSuffix, String tagSuffix, String domain) {
+        return new RocketMqMessage(event, topicSuffix, tagSuffix, domain);
     }
 
     public RocketMqMessage() {
     }
 
-    public RocketMqMessage(String topic, String domain) {
+    public RocketMqMessage(String topic, String tag, String domain) {
         this.topic = topic;
+        this.tag = tag;
         this.domain = domain;
     }
 
-    public RocketMqMessage(IMessageEvent event, String domain) {
-        this(event.getTopic(), domain);
-        this.tag = RocketMqUtil.generateTag(event.getTags());
+    public RocketMqMessage(IMessageEvent event, String topicSuffix, String tagSuffix, String domain) {
+        this(RocketMqUtil.generateTopic(event.getTopic(), topicSuffix),
+                RocketMqUtil.generateTag(event.getTags(), tagSuffix),
+                domain);
     }
 
     /**
@@ -87,9 +89,9 @@ public class RocketMqMessage implements Serializable {
      */
     public String generateTxId() {
         if (txId == null) {
-            txId = String.format("%s:%s:", getTopic(), getTag());
-            if (StringUtil.isNullOrEmpty(domainKey)) {
-                txId = String.format("%s%s:%s", txId, getCreatedDate(), UUID.randomUUID().toString());
+            txId = getTopic() + ":" + getTag();
+            if (StringUtils.isEmpty(domainKey)) {
+                txId = String.format("%s%s:%s", txId, getCreatedDate(), UUID.randomUUID());
             } else {
                 txId = txId + domainKey;
             }

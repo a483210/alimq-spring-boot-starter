@@ -104,7 +104,8 @@ public class ProducerController {
     }
 
     @PostMapping(value = "/sendTransaction/{content}")
-    public String transactionSingleMessage(@PathVariable("content") String content) {
+    public String transactionSingleMessage(@PathVariable("content") String content,
+                                           @RequestParam(value = "reject", required = false) Integer reject) {
         if (StringUtils.isEmpty(content)) {
             return "failure";
         }
@@ -114,7 +115,13 @@ public class ProducerController {
         singleMessage.setContent(content);
 
         rocketMqTransactionTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage,
-                message -> TransactionStatus.CommitTransaction);
+                message -> {
+                    if (reject != null && reject == 1) {
+                        throw new NullPointerException("reject execute");
+                    }
+
+                    return TransactionStatus.CommitTransaction;
+                });
 
         return "success";
     }

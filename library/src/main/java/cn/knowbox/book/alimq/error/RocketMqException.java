@@ -1,7 +1,6 @@
 package cn.knowbox.book.alimq.error;
 
 import com.aliyun.openservices.ons.api.OnExceptionContext;
-
 import lombok.Getter;
 
 /**
@@ -12,15 +11,11 @@ import lombok.Getter;
 @Getter
 public class RocketMqException extends RuntimeException {
 
-    private OnExceptionContext exceptionContext;
-
     public RocketMqException(String message) {
         super(message);
     }
 
-    public RocketMqException(OnExceptionContext exceptionContext) {
-        super(exceptionContext.getException());
-        this.exceptionContext = exceptionContext;
+    public RocketMqException(OnExceptionContext context) {
+        super(context.getException());
     }
-
 }

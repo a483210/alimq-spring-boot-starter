@@ -11,17 +11,13 @@ import lombok.Getter;
  */
 @Getter
 public enum MessageEvent implements IMessageEvent {
+
     SINGLE_MESSAGE(Constants.TOPIC_SINGLE, "v1"),
     SINGLE_MESSAGE_LIST(Constants.TOPIC_SINGLE, "list"),
     ;
 
     private final String topic;
     private final String[] tags;
-
-    MessageEvent(String topic) {
-        this.topic = topic;
-        this.tags = null;
-    }
 
     MessageEvent(String topic, String... tags) {
         this.topic = topic;

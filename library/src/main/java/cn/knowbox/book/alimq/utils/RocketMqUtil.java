@@ -1,12 +1,12 @@
 package cn.knowbox.book.alimq.utils;
 
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.zip.CRC32;
 
@@ -51,15 +51,31 @@ public class RocketMqUtil {
      * @param tag   tag
      */
     public static String generateCheckerKey(String topic, String tag) {
-        return String.format("%s/%s", topic, tag);
+        return topic + "/" + tag;
+    }
+
+    /**
+     * 生成topic
+     *
+     * @param topic       topic
+     * @param topicSuffix topic后缀
+     */
+    public static String generateTopic(String topic, String topicSuffix) {
+        return topic + topicSuffix;
     }
 
     /**
      * 生成tag
      *
-     * @param tags tag集合
+     * @param tags      tag集合
+     * @param tagSuffix tag后缀
      */
-    public static String generateTag(String[] tags) {
+    public static String generateTag(String[] tags, String tagSuffix) {
+        if (!StringUtils.isEmpty(tags)) {
+            tags = Arrays.stream(tags)
+                    .map(it -> it + tagSuffix)
+                    .toArray(String[]::new);
+        }
         return StringUtils.arrayToDelimitedString(tags, " || ");
     }
 

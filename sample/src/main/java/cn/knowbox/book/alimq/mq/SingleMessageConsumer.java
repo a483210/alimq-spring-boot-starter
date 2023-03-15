@@ -2,7 +2,7 @@ package cn.knowbox.book.alimq.mq;
 
 import cn.knowbox.book.alimq.annotation.RocketMqConsume;
 import cn.knowbox.book.alimq.consts.Constants;
-import cn.knowbox.book.alimq.consumer.RocketMqListener;
+import cn.knowbox.book.alimq.consumer.ConsumerListener;
 import cn.knowbox.book.alimq.model.SingleMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
@@ -14,10 +14,14 @@ import org.springframework.lang.NonNull;
  */
 @Slf4j
 @RocketMqConsume(groupId = Constants.GROUP_ID_LIVE, topic = Constants.TOPIC_SINGLE, tag = "v1", reconsumeFor = IllegalArgumentException.class)
-public class SingleMessageConsumer implements RocketMqListener<SingleMessage> {
+public class SingleMessageConsumer implements ConsumerListener<SingleMessage> {
 
     @Override
     public void onMessage(@NonNull SingleMessage message) {
         log.info("{}", message);
+
+        if (message.getContent().toLowerCase().endsWith("reject")) {
+            throw new NullPointerException("reject message");
+        }
     }
 }

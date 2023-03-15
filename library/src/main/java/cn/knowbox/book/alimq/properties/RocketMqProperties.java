@@ -1,10 +1,9 @@
-package cn.knowbox.book.alimq.config;
+package cn.knowbox.book.alimq.properties;
 
 import cn.knowbox.book.alimq.producer.RocketMqClusterType;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-
-import lombok.Data;
 
 /**
  * 配置Bean
@@ -42,10 +41,17 @@ public class RocketMqProperties {
     private ConsumerProperty consumer;
 
     /**
+     * topic后缀
+     */
+    private String topicSuffix = "";
+    /**
+     * group后缀
+     */
+    private String groupSuffix = "";
+    /**
      * tag后缀
      */
-    private String tagSuffix;
-
+    private String tagSuffix = "";
     /**
      * 集群类型，默认ali rocketMq
      * <p>

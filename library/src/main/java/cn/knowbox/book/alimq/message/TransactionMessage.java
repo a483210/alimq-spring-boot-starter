@@ -51,7 +51,7 @@ public class TransactionMessage<T> {
     private Object arg;
 
     public TransactionMessage(RocketMqMessage rocketMqMessage, T domain, long hashId, Object arg) {
-        this.txId = rocketMqMessage.getTxId();
+        this.txId = rocketMqMessage.generateTxId();
         this.topic = rocketMqMessage.getTopic();
         this.tag = rocketMqMessage.getTag();
         this.domain = domain;

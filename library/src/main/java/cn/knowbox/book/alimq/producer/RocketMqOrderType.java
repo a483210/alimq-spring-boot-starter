@@ -29,7 +29,7 @@ public enum RocketMqOrderType {
         this.type = code;
     }
 
-    public static RocketMqOrderType valueOf(byte type) {
+    public static RocketMqOrderType valueOf(Integer type) {
         for (RocketMqOrderType item : RocketMqOrderType.values()) {
             if (item.getType() == type) {
                 return item;

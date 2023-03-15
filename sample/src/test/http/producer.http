@@ -15,3 +15,9 @@ POST http://localhost:8089/mq/sendOrder/contentOrder
 
 ### 发送事务消息
 POST http://localhost:8089/mq/sendTransaction/contentTransaction
+
+### 发送事务消息，发送拒绝
+POST http://localhost:8089/mq/sendTransaction/contentTransaction?reject=1
+
+### 发送事务消息，消费拒绝
+POST http://localhost:8089/mq/sendTransaction/contentTransactionReject

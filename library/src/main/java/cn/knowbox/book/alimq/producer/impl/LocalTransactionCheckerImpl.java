@@ -70,7 +70,11 @@ public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
                 throw new RocketMqException(String.format("TransactionChecker[%s]未初始化！", checkerKey));
             }
 
-            Object value = mqParser.parse(message.getDomain(), checkTypes.get(checkerKey));
+            Type checkType = checkTypes.get(checkerKey);
+            if (checkType == null) {
+                throw new NullPointerException("rocketMqMessage checkType null");
+            }
+            Object value = mqParser.parse(message.getDomain(), checkType);
             if (value == null) {
                 throw new NullPointerException("rocketMqMessage value null");
             }

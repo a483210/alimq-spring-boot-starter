@@ -7,7 +7,7 @@ import org.springframework.lang.NonNull;
  *
  * @author Created by gold on 2019/10/4 15:23
  */
-public interface RocketMqListener<T> {
+public interface ConsumerListener<T> {
 
     /**
      * 消费

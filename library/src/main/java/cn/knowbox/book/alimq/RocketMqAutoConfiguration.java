@@ -1,11 +1,13 @@
 package cn.knowbox.book.alimq;
 
-import cn.knowbox.book.alimq.config.RocketMqProperties;
+import cn.knowbox.book.alimq.properties.RocketMqProperties;
 import cn.knowbox.book.alimq.consts.RocketMqConstants;
-import cn.knowbox.book.alimq.consumer.ConsumerProcessor;
+import cn.knowbox.book.alimq.consumer.ConsumerInitializingProcessor;
+import cn.knowbox.book.alimq.consumer.ConsumerPostProcessor;
 import cn.knowbox.book.alimq.parser.JacksonMqParser;
 import cn.knowbox.book.alimq.parser.MqParser;
-import cn.knowbox.book.alimq.producer.TransactionCheckerProcessor;
+import cn.knowbox.book.alimq.producer.TransactionCheckerInitializingProcessor;
+import cn.knowbox.book.alimq.producer.TransactionCheckerPostProcessor;
 import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.template.RocketMqOrderTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTemplate;
@@ -41,15 +43,15 @@ public class RocketMqAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "enabled", havingValue = "true")
-    public RocketMqTemplate rocketMqTemplate(MqParser mqParser, ProducerBean producer) {
-        return new RocketMqTemplate(mqParser, producer);
+    @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "enabled", havingValue = "true", matchIfMissing = true)
+    public RocketMqTemplate rocketMqTemplate(MqParser mqParser,
+                                             ProducerBean producer,
+                                             RocketMqProperties properties) {
+        return new RocketMqTemplate(mqParser, producer, properties);
     }
 
     @Bean(name = "producer", initMethod = "start", destroyMethod = "shutdown")
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "enabled", havingValue = "true", matchIfMissing = true)
     public ProducerBean producer(RocketMqProperties rocketMqProperties) {
         log.info("rocketMq producer init");
 
@@ -61,14 +63,14 @@ public class RocketMqAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "order-enabled", havingValue = "true")
-    public RocketMqOrderTemplate rocketMqOrderTemplate(MqParser mqParser, OrderProducerBean orderProducer) {
-        return new RocketMqOrderTemplate(mqParser, orderProducer);
+    public RocketMqOrderTemplate rocketMqOrderTemplate(MqParser mqParser,
+                                                       OrderProducerBean orderProducer,
+                                                       RocketMqProperties properties) {
+        return new RocketMqOrderTemplate(mqParser, orderProducer, properties);
     }
 
     @Bean(name = "orderProducer", initMethod = "start", destroyMethod = "shutdown")
-    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "order-enabled", havingValue = "true")
     public OrderProducerBean orderProducer(RocketMqProperties rocketMqProperties) {
         log.info("rocketMq orderProducer init");
@@ -81,14 +83,14 @@ public class RocketMqAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "transaction-enabled", havingValue = "true")
-    public RocketMqTransactionTemplate rocketMqTransactionTemplate(MqParser mqParser, TransactionProducerBean transactionProducer) {
-        return new RocketMqTransactionTemplate(mqParser, transactionProducer);
+    public RocketMqTransactionTemplate rocketMqTransactionTemplate(MqParser mqParser,
+                                                                   TransactionProducerBean transactionProducer,
+                                                                   RocketMqProperties properties) {
+        return new RocketMqTransactionTemplate(mqParser, transactionProducer, properties);
     }
 
     @Bean(name = "transactionProducer", initMethod = "start", destroyMethod = "shutdown")
-    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "transaction-enabled", havingValue = "true")
     public TransactionProducerBean transactionProducer(RocketMqProperties rocketMqProperties, MqParser mqParser) {
         log.info("rocketMq transactionProducer init");
@@ -117,20 +119,33 @@ public class RocketMqAutoConfiguration {
         return properties;
     }
 
+    @Bean
+    @ConditionalOnProperty(prefix = "aliyun.mq.consumer", value = "enabled", havingValue = "true", matchIfMissing = true)
+    public ConsumerPostProcessor consumerPostProcessor() {
+        return new ConsumerPostProcessor();
+    }
+
     @Bean(destroyMethod = "shutdown")
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "aliyun.mq.consumer", value = "enabled", havingValue = "true")
-    public ConsumerProcessor consumer(MqParser mqParser, RocketMqProperties properties) {
+    @ConditionalOnProperty(prefix = "aliyun.mq.consumer", value = "enabled", havingValue = "true", matchIfMissing = true)
+    public ConsumerInitializingProcessor consumerInitializingProcessor(MqParser mqParser,
+                                                                       RocketMqProperties properties,
+                                                                       ConsumerPostProcessor processor) {
         log.info("rocketMq consumer init");
 
-        return new ConsumerProcessor(mqParser, properties);
+        return new ConsumerInitializingProcessor(mqParser, properties, processor);
     }
 
     @Bean
-    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "transaction-enabled", havingValue = "true")
-    public TransactionCheckerProcessor transactionCheckerProducer(TransactionProducerBean transactionProducer) {
-        return new TransactionCheckerProcessor(transactionProducer);
+    public TransactionCheckerPostProcessor transactionCheckerPostProcessor() {
+        return new TransactionCheckerPostProcessor();
     }
 
+    @Bean
+    @ConditionalOnProperty(prefix = "aliyun.mq.producer", value = "transaction-enabled", havingValue = "true")
+    public TransactionCheckerInitializingProcessor transactionCheckerInitializingProcessor(TransactionProducerBean transactionProducer,
+                                                                                           RocketMqProperties properties,
+                                                                                           TransactionCheckerPostProcessor processor) {
+        return new TransactionCheckerInitializingProcessor(transactionProducer, properties, processor);
+    }
 }

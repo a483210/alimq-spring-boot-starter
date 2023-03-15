@@ -1,5 +1,6 @@
 package cn.knowbox.book.alimq.producer.template;
 
+import cn.knowbox.book.alimq.properties.RocketMqProperties;
 import cn.knowbox.book.alimq.consts.RocketMqConstants;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.IMessageEvent;
@@ -8,6 +9,7 @@ import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.RocketMqClusterType;
 import com.aliyun.openservices.ons.api.*;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.SerializationUtils;
 import org.springframework.util.StringUtils;
@@ -24,17 +26,14 @@ import java.util.concurrent.CompletableFuture;
  * @author Created by gold on 2019/10/4 15:27
  */
 @Slf4j
+@AllArgsConstructor
 public class RocketMqTemplate {
 
-    private static final long DELAY_DAY_7 = 7 * 24 * 60 * 60 * 1000;
+    private static final long DELAY_DAY_7 = 7 * 24 * 60 * 60 * 1000L;
 
     private final MqParser mqParser;
     private final ProducerBean producer;
-
-    public RocketMqTemplate(MqParser mqParser, ProducerBean producer) {
-        this.mqParser = mqParser;
-        this.producer = producer;
-    }
+    private final RocketMqProperties properties;
 
     /**
      * 单向发送
@@ -42,8 +41,8 @@ public class RocketMqTemplate {
      * @param topic  topic
      * @param domain 对象
      */
-    public void sendOneway(String topic, Object domain) {
-        sendOneway(new RocketMqMessage(topic, format(domain)));
+    public void sendOneway(String topic, String tag, Object domain) {
+        sendOneway(new RocketMqMessage(topic, tag, format(domain)));
     }
 
     /**
@@ -53,7 +52,7 @@ public class RocketMqTemplate {
      * @param domain 对象
      */
     public void sendOneway(IMessageEvent event, Object domain) {
-        sendOneway(new RocketMqMessage(event, format(domain)));
+        sendOneway(new RocketMqMessage(event, properties.getTopicSuffix(), properties.getTagSuffix(), format(domain)));
     }
 
     /**
@@ -74,8 +73,8 @@ public class RocketMqTemplate {
      * @param topic  topic
      * @param domain 对象
      */
-    public SendResult send(String topic, Object domain) {
-        return send(new RocketMqMessage(topic, format(domain)));
+    public SendResult send(String topic, String tag, Object domain) {
+        return send(new RocketMqMessage(topic, tag, format(domain)));
     }
 
     /**
@@ -84,8 +83,8 @@ public class RocketMqTemplate {
      * @param topic  topic
      * @param domain 对象
      */
-    public SendResult send(String topic, Object domain, long delay) {
-        return send(new RocketMqMessage(topic, format(domain)), delay);
+    public SendResult send(String topic, String tag, Object domain, long delay) {
+        return send(new RocketMqMessage(topic, tag, format(domain)), delay);
     }
 
     /**
@@ -95,7 +94,7 @@ public class RocketMqTemplate {
      * @param domain 对象
      */
     public SendResult send(IMessageEvent event, Object domain) {
-        return send(new RocketMqMessage(event, format(domain)));
+        return send(new RocketMqMessage(event, properties.getTopicSuffix(), properties.getTagSuffix(), format(domain)));
     }
 
     /**
@@ -106,7 +105,7 @@ public class RocketMqTemplate {
      * @param delay  延迟
      */
     public SendResult send(IMessageEvent event, Object domain, long delay) {
-        return send(new RocketMqMessage(event, format(domain)), delay);
+        return send(new RocketMqMessage(event, properties.getTopicSuffix(), properties.getTagSuffix(), format(domain)), delay);
     }
 
     /**
@@ -163,7 +162,9 @@ public class RocketMqTemplate {
     public SendResult sendTime(RocketMqMessage event, long startTime) {
         checkStartTime(startTime);
 
-        log.info("send [message：{}]", event);
+        if (properties.getProducer().isLogging()) {
+            log.info("send [message：{}]", event);
+        }
 
         Message message = createMessage(producer.getProperties(), event);
 
@@ -180,8 +181,8 @@ public class RocketMqTemplate {
      * @param topic  topic
      * @param domain 对象
      */
-    public CompletableFuture<SendResult> sendAsync(String topic, Object domain) {
-        return sendAsync(new RocketMqMessage(topic, format(domain)));
+    public CompletableFuture<SendResult> sendAsync(String topic, String tag, Object domain) {
+        return sendAsync(new RocketMqMessage(topic, tag, format(domain)));
     }
 
     /**
@@ -191,8 +192,8 @@ public class RocketMqTemplate {
      * @param domain 对象
      * @param delay  延迟时间
      */
-    public CompletableFuture<SendResult> sendAsync(String topic, Object domain, long delay) {
-        return sendAsync(new RocketMqMessage(topic, format(domain)), delay);
+    public CompletableFuture<SendResult> sendAsync(String topic, String tag, Object domain, long delay) {
+        return sendAsync(new RocketMqMessage(topic, tag, format(domain)), delay);
     }
 
     /**
@@ -202,7 +203,7 @@ public class RocketMqTemplate {
      * @param domain 对象
      */
     public CompletableFuture<SendResult> sendAsync(IMessageEvent event, Object domain) {
-        return sendAsync(new RocketMqMessage(event, format(domain)));
+        return sendAsync(new RocketMqMessage(event, properties.getTopicSuffix(), properties.getTagSuffix(), format(domain)));
     }
 
     /**
@@ -213,7 +214,7 @@ public class RocketMqTemplate {
      * @param delay  延迟时间
      */
     public CompletableFuture<SendResult> sendAsync(IMessageEvent event, Object domain, long delay) {
-        return sendAsync(new RocketMqMessage(event, format(domain)), delay);
+        return sendAsync(new RocketMqMessage(event, properties.getTopicSuffix(), properties.getTagSuffix(), format(domain)), delay);
     }
 
     /**
@@ -270,7 +271,9 @@ public class RocketMqTemplate {
     public CompletableFuture<SendResult> sendAsyncTime(RocketMqMessage event, long startTime) {
         checkStartTime(startTime);
 
-        log.info("sendAsync [message：{}]", event);
+        if (properties.getProducer().isLogging()) {
+            log.info("sendAsync [message：{}]", event);
+        }
 
         CompletableFuture<SendResult> future = new CompletableFuture<>();
 

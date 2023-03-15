@@ -9,7 +9,7 @@ import org.springframework.util.SerializationUtils;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.message.TransactionMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
-import cn.knowbox.book.alimq.producer.intefaces.TransactionExecuter;
+import cn.knowbox.book.alimq.producer.intefaces.TransactionExecutor;
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,17 +19,17 @@ import lombok.extern.slf4j.Slf4j;
  * @author Created by gold on 2019/10/4 15:27
  */
 @Slf4j
-public class LocalTransactionExecuterImpl<T> implements LocalTransactionExecuter {
+public class LocalTransactionExecutorImpl<T> implements LocalTransactionExecuter {
 
     private final MqParser mqParser;
 
-    private final TransactionExecuter<T> transactionExecuter;
+    private final TransactionExecutor<T> transactionExecutor;
     private final Class<T> clsType;
 
-    public LocalTransactionExecuterImpl(MqParser mqParser, TransactionExecuter<T> transactionExecuter, Class<T> clsType) {
+    public LocalTransactionExecutorImpl(MqParser mqParser, TransactionExecutor<T> transactionExecutor, Class<T> clsType) {
         this.mqParser = mqParser;
 
-        this.transactionExecuter = transactionExecuter;
+        this.transactionExecutor = transactionExecutor;
         this.clsType = clsType;
     }
 
@@ -50,11 +50,11 @@ public class LocalTransactionExecuterImpl<T> implements LocalTransactionExecuter
                 throw new NullPointerException("rocketMqMessage value null");
             }
 
-            transactionStatus = transactionExecuter.execute(new TransactionMessage<>(message, value, crc32Id, arg));
+            transactionStatus = transactionExecutor.execute(new TransactionMessage<>(message, value, crc32Id, arg));
 
-            log.info("TransactionExecuter success [msgId：{}, transactionStatus：{}]", msgId, transactionStatus.name());
+            log.info("TransactionExecutor success [msgId：{}, transactionStatus：{}]", msgId, transactionStatus.name());
         } catch (Throwable throwable) {
-            log.error("TransactionExecuter error msgId = " + msg.getMsgID(), throwable);
+            log.error("TransactionExecutor error msgId = " + msg.getMsgID(), throwable);
         }
 
         if (transactionStatus == null) {

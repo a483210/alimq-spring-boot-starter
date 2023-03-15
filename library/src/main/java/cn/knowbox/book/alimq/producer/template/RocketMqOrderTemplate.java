@@ -1,5 +1,6 @@
 package cn.knowbox.book.alimq.producer.template;
 
+import cn.knowbox.book.alimq.properties.RocketMqProperties;
 import com.aliyun.openservices.ons.api.SendResult;
 import com.aliyun.openservices.ons.api.bean.OrderProducerBean;
 
@@ -7,6 +8,7 @@ import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.RocketMqOrderType;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -15,15 +17,12 @@ import lombok.extern.slf4j.Slf4j;
  * @author Created by gold on 2019/10/4 15:27
  */
 @Slf4j
+@AllArgsConstructor
 public class RocketMqOrderTemplate {
 
     private final MqParser mqParser;
     private final OrderProducerBean orderProducer;
-
-    public RocketMqOrderTemplate(MqParser mqParser, OrderProducerBean orderProducer) {
-        this.mqParser = mqParser;
-        this.orderProducer = orderProducer;
-    }
+    private final RocketMqProperties properties;
 
     /**
      * 同步发送全局顺序消息
@@ -32,16 +31,7 @@ public class RocketMqOrderTemplate {
      * @param domain 对象
      */
     public SendResult send(IMessageEvent event, Object domain) {
-        return send(new RocketMqMessage(event, format(domain)));
-    }
-
-    /**
-     * 同步发送全局顺序消息
-     *
-     * @param event 事件
-     */
-    public SendResult send(RocketMqMessage event) {
-        return send(event, RocketMqOrderType.GLOBAL);
+        return send(event, domain, RocketMqOrderType.GLOBAL);
     }
 
     /**
@@ -51,7 +41,16 @@ public class RocketMqOrderTemplate {
      * @param domain 对象
      */
     public SendResult send(IMessageEvent event, Object domain, RocketMqOrderType orderType) {
-        return send(new RocketMqMessage(event, format(domain)), orderType);
+        return send(new RocketMqMessage(event, properties.getTopicSuffix(), properties.getTagSuffix(), format(domain)), orderType);
+    }
+
+    /**
+     * 同步发送全局顺序消息
+     *
+     * @param event 事件
+     */
+    public SendResult send(RocketMqMessage event) {
+        return send(event, RocketMqOrderType.GLOBAL);
     }
 
     /**
@@ -84,7 +83,7 @@ public class RocketMqOrderTemplate {
      * @param domain 对象
      */
     public SendResult send(IMessageEvent event, Object domain, String sharding) {
-        return send(new RocketMqMessage(event, format(domain)), sharding);
+        return send(new RocketMqMessage(event, properties.getTopicSuffix(), properties.getTagSuffix(), format(domain)), sharding);
     }
 
     /**
@@ -94,7 +93,9 @@ public class RocketMqOrderTemplate {
      * @param sharding 分区顺序消息中区分不同分区的关键字段，sharding key 于普通消息的 key 是完全不同的概念。
      */
     public SendResult send(RocketMqMessage event, String sharding) {
-        log.info("sendOrder [message：{}, sharding：{}]", event, sharding);
+        if (properties.getProducer().isLogging()) {
+            log.info("sendOrder [message：{}, sharding：{}]", event, sharding);
+        }
 
         return orderProducer.send(RocketMqTemplate.createMessage(orderProducer.getProperties(), event), sharding);
     }

@@ -10,7 +10,6 @@ aliyun:
     address: 你的mq地址
     access-key: 你的key
     secret-key: 你的key
-    tag-suffix: -dev
     cluster-type: 1
     producer:
       enabled: true
