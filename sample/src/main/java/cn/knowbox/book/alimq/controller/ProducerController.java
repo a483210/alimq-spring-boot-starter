@@ -7,7 +7,7 @@ import cn.knowbox.book.alimq.producer.template.RocketMqTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTransactionTemplate;
 import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class ProducerController {
 
     @PostMapping(value = "/send/{content}")
     public String singleMessage(@PathVariable("content") String content) {
-        if (StringUtils.isEmpty(content)) {
+        if (ObjectUtils.isEmpty(content)) {
             return "failure";
         }
 
@@ -54,7 +54,7 @@ public class ProducerController {
     @PostMapping(value = "/sendDelay/{content}")
     public String delaySingleMessage(@PathVariable("content") String content,
                                      @RequestParam(value = "delay", required = false) Long delay) {
-        if (StringUtils.isEmpty(content)) {
+        if (ObjectUtils.isEmpty(content)) {
             return "failure";
         }
 
@@ -75,7 +75,7 @@ public class ProducerController {
 
     @PostMapping(value = "/sendAsync/{content}")
     public String asyncSingleMessage(@PathVariable("content") String content) {
-        if (StringUtils.isEmpty(content)) {
+        if (ObjectUtils.isEmpty(content)) {
             return "failure";
         }
 
@@ -90,7 +90,7 @@ public class ProducerController {
 
     @PostMapping(value = "/sendOrder/{content}")
     public String orderSingleMessage(@PathVariable("content") String content) {
-        if (StringUtils.isEmpty(content)) {
+        if (ObjectUtils.isEmpty(content)) {
             return "failure";
         }
 
@@ -106,7 +106,7 @@ public class ProducerController {
     @PostMapping(value = "/sendTransaction/{content}")
     public String transactionSingleMessage(@PathVariable("content") String content,
                                            @RequestParam(value = "reject", required = false) Integer reject) {
-        if (StringUtils.isEmpty(content)) {
+        if (ObjectUtils.isEmpty(content)) {
             return "failure";
         }
 

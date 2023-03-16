@@ -1,6 +1,8 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.8.RELEASE'
+        springBootVersion = "2.7.9"
+
+        rocketMqVersion = "1.8.8.8.Final"
     }
 
     repositories {
@@ -8,12 +10,25 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
     }
 }
 
 allprojects {
     repositories {
         mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: "idea"
+    apply plugin: "io.spring.dependency-management"
+
+    version = "1.0.0"
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+        }
     }
 }

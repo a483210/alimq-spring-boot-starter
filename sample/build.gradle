@@ -1,16 +1,13 @@
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
+apply plugin: "java"
+apply plugin: "org.springframework.boot"
 
 dependencies {
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    implementation project(":library")
 
-    compile project(':library')
+    implementation "org.springframework.boot:spring-boot-starter-web"
 
-    compile 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    implementation "com.squareup.okhttp3:logging-interceptor"
 
-    compile 'org.springframework.boot:spring-boot-starter-web'
-
-    compile 'com.squareup.okhttp3:logging-interceptor:3.12.0'
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
 }

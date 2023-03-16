@@ -2,6 +2,7 @@ package cn.knowbox.book.alimq.utils;
 
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import org.springframework.lang.Nullable;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.ParameterizedType;
@@ -71,7 +72,7 @@ public class RocketMqUtil {
      * @param tagSuffix tag后缀
      */
     public static String generateTag(String[] tags, String tagSuffix) {
-        if (!StringUtils.isEmpty(tags)) {
+        if (!ObjectUtils.isEmpty(tags)) {
             tags = Arrays.stream(tags)
                     .map(it -> it + tagSuffix)
                     .toArray(String[]::new);

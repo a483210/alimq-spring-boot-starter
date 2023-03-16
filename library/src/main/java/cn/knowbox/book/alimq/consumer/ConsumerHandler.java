@@ -11,8 +11,8 @@ import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.SerializationUtils;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Type;
 
@@ -54,7 +54,7 @@ public class ConsumerHandler<T> implements MessageListener {
                 throw new NullPointerException("rocketMqMessage null");
             }
             String domain = rocketMqMessage.getDomain();
-            if (StringUtils.isEmpty(domain)) {
+            if (ObjectUtils.isEmpty(domain)) {
                 throw new NullPointerException("domain null");
             }
             T value = mqParser.parse(domain, type);

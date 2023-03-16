@@ -1,18 +1,18 @@
 package cn.knowbox.book.alimq.producer.template;
 
-import cn.knowbox.book.alimq.properties.RocketMqProperties;
 import cn.knowbox.book.alimq.consts.RocketMqConstants;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.RocketMqClusterType;
+import cn.knowbox.book.alimq.properties.RocketMqProperties;
 import com.aliyun.openservices.ons.api.*;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.SerializationUtils;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -306,7 +306,7 @@ public class RocketMqTemplate {
         if (event == null) {
             throw new RocketMqException("事件不允许为空！");
         }
-        if (StringUtils.isEmpty(event.getTopic())) {
+        if (ObjectUtils.isEmpty(event.getTopic())) {
             throw new RocketMqException("Topic不允许为空！");
         }
         if (event.getDomain() == null) {
@@ -337,7 +337,7 @@ public class RocketMqTemplate {
         }
 
         String json = mqParser.format(domain);
-        if (StringUtils.isEmpty(json)) {
+        if (ObjectUtils.isEmpty(json)) {
             throw new RocketMqException("domain不是Json！");
         }
 

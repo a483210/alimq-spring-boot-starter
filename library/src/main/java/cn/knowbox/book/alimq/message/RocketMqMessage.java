@@ -2,7 +2,7 @@ package cn.knowbox.book.alimq.message;
 
 import cn.knowbox.book.alimq.utils.RocketMqUtil;
 import lombok.Data;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -90,7 +90,7 @@ public class RocketMqMessage implements Serializable {
     public String generateTxId() {
         if (txId == null) {
             txId = getTopic() + ":" + getTag();
-            if (StringUtils.isEmpty(domainKey)) {
+            if (ObjectUtils.isEmpty(domainKey)) {
                 txId = String.format("%s%s:%s", txId, getCreatedDate(), UUID.randomUUID());
             } else {
                 txId = txId + domainKey;

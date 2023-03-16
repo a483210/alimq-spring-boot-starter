@@ -1,16 +1,13 @@
-apply plugin: 'java'
+apply plugin: "java-library"
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.8'
-    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    api "com.aliyun.openservices:ons-client:$rocketMqVersion"
 
-    compile 'com.fasterxml.jackson.core:jackson-core:2.9.9'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.9.3'
+    implementation "com.fasterxml.jackson.core:jackson-databind"
 
-    compile 'com.aliyun.openservices:ons-client:1.8.8.8.Final'
+    implementation "org.springframework.boot:spring-boot-starter"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    compile 'org.springframework.boot:spring-boot-starter:2.1.8.RELEASE'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.1.7.RELEASE'
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

@@ -1,6 +1,5 @@
 package cn.knowbox.book.alimq;
 
-import cn.knowbox.book.alimq.properties.RocketMqProperties;
 import cn.knowbox.book.alimq.consts.RocketMqConstants;
 import cn.knowbox.book.alimq.consumer.ConsumerInitializingProcessor;
 import cn.knowbox.book.alimq.consumer.ConsumerPostProcessor;
@@ -12,6 +11,7 @@ import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.template.RocketMqOrderTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTransactionTemplate;
+import cn.knowbox.book.alimq.properties.RocketMqProperties;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.bean.OrderProducerBean;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
@@ -22,7 +22,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Properties;
 
@@ -107,7 +107,7 @@ public class RocketMqAutoConfiguration {
         Properties properties = new Properties();
 
         String groupId = rocketMqProperties.getProducer().getGroupId();
-        if (!StringUtils.isEmpty(groupId)) {
+        if (!ObjectUtils.isEmpty(groupId)) {
             properties.put(PropertyKeyConst.GROUP_ID, groupId);
         }
 
