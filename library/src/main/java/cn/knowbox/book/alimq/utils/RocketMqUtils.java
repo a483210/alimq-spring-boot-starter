@@ -16,9 +16,9 @@ import java.util.zip.CRC32;
  *
  * @author Created by gold on 2019/10/5 14:33
  */
-public class RocketMqUtil {
+public class RocketMqUtils {
 
-    private RocketMqUtil() {
+    private RocketMqUtils() {
     }
 
     /**

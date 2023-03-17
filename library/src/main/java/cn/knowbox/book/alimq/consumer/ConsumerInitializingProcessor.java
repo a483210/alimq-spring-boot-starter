@@ -4,7 +4,7 @@ import cn.knowbox.book.alimq.annotation.RocketMqConsume;
 import cn.knowbox.book.alimq.properties.RocketMqProperties;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.parser.MqParser;
-import cn.knowbox.book.alimq.utils.RocketMqUtil;
+import cn.knowbox.book.alimq.utils.RocketMqUtils;
 import com.aliyun.openservices.ons.api.Consumer;
 import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
@@ -40,7 +40,7 @@ public class ConsumerInitializingProcessor implements InitializingBean {
 
             String topic = annotation.topic() + properties.getTopicSuffix();
             String groupId = annotation.groupId() + properties.getGroupSuffix();
-            String tag = RocketMqUtil.generateTag(annotation.tag(), properties.getTagSuffix());
+            String tag = RocketMqUtils.generateTag(annotation.tag(), properties.getTagSuffix());
 
             getConsumer(annotation, groupId)
                     .subscribe(topic,
@@ -80,7 +80,7 @@ public class ConsumerInitializingProcessor implements InitializingBean {
     }
 
     private Consumer create(Properties properties) {
-        if (!RocketMqUtil.checkProperties(properties)) {
+        if (!RocketMqUtils.checkProperties(properties)) {
             throw new RocketMqException("Consumer初始化失败，配置错误！");
         }
 

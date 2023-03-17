@@ -5,7 +5,7 @@ import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.message.TransactionMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionChecker;
-import cn.knowbox.book.alimq.utils.RocketMqUtil;
+import cn.knowbox.book.alimq.utils.RocketMqUtils;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.transaction.LocalTransactionChecker;
 import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
@@ -39,7 +39,7 @@ public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
     public void put(String checkerKey, TransactionChecker<?> transactionCheck) {
         transactionChecks.put(checkerKey, transactionCheck);
 
-        Type type = RocketMqUtil.parseType(transactionCheck.getClass(), TransactionChecker.class);
+        Type type = RocketMqUtils.parseType(transactionCheck.getClass(), TransactionChecker.class);
         if (type == null) {
             throw new RocketMqException(String.format("%s缺少泛型！", transactionCheck.getClass().getSimpleName()));
         }
@@ -55,7 +55,7 @@ public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
     @SuppressWarnings("unchecked")
     public TransactionStatus check(Message msg) {
         String msgId = msg.getMsgID();
-        long crc32Id = RocketMqUtil.crc32Code(msg.getBody());
+        long crc32Id = RocketMqUtils.crc32Code(msg.getBody());
 
         TransactionStatus transactionStatus = null;
         try {
@@ -64,7 +64,7 @@ public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
                 throw new NullPointerException("rocketMqMessage null");
             }
 
-            String checkerKey = RocketMqUtil.generateCheckerKey(message.getTopic(), message.getTag());
+            String checkerKey = RocketMqUtils.generateCheckerKey(message.getTopic(), message.getTag());
             TransactionChecker<?> transactionChecker = transactionChecks.get(checkerKey);
             if (transactionChecker == null) {//这里理论上不可能发生
                 throw new RocketMqException(String.format("TransactionChecker[%s]未初始化！", checkerKey));

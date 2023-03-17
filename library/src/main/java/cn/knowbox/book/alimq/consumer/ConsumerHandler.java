@@ -4,7 +4,7 @@ import cn.knowbox.book.alimq.annotation.RocketMqConsume;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
-import cn.knowbox.book.alimq.utils.RocketMqUtil;
+import cn.knowbox.book.alimq.utils.RocketMqUtils;
 import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
@@ -33,7 +33,7 @@ public class ConsumerHandler<T> implements MessageListener {
     ConsumerHandler(MqParser mqParser, ConsumerListener<T> consumerListener, RocketMqConsume rocketMqConsume) {
         Class<?> listenerCls = AopUtils.getTargetClass(consumerListener);
 
-        this.type = RocketMqUtil.parseType(listenerCls, ConsumerListener.class);
+        this.type = RocketMqUtils.parseType(listenerCls, ConsumerListener.class);
         if (type == null) {
             throw new RocketMqException(String.format("%s缺少泛型！", listenerCls.getSimpleName()));
         }

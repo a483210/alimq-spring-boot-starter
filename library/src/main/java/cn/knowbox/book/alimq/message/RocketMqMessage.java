@@ -1,6 +1,6 @@
 package cn.knowbox.book.alimq.message;
 
-import cn.knowbox.book.alimq.utils.RocketMqUtil;
+import cn.knowbox.book.alimq.utils.RocketMqUtils;
 import lombok.Data;
 import org.springframework.util.ObjectUtils;
 
@@ -49,8 +49,8 @@ public class RocketMqMessage implements Serializable {
     }
 
     public RocketMqMessage(IMessageEvent event, String topicSuffix, String tagSuffix, String domain) {
-        this(RocketMqUtil.generateTopic(event.getTopic(), topicSuffix),
-                RocketMqUtil.generateTag(event.getTags(), tagSuffix),
+        this(RocketMqUtils.generateTopic(event.getTopic(), topicSuffix),
+                RocketMqUtils.generateTag(event.getTags(), tagSuffix),
                 domain);
     }
 
@@ -91,7 +91,7 @@ public class RocketMqMessage implements Serializable {
         if (txId == null) {
             txId = getTopic() + ":" + getTag();
             if (ObjectUtils.isEmpty(domainKey)) {
-                txId = String.format("%s%s:%s", txId, getCreatedDate(), UUID.randomUUID());
+                txId = txId + getCreatedDate() + ":" + UUID.randomUUID();
             } else {
                 txId = txId + domainKey;
             }

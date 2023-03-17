@@ -16,7 +16,9 @@ import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.bean.OrderProducerBean;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import com.aliyun.openservices.ons.api.bean.TransactionProducerBean;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -38,7 +40,11 @@ public class RocketMqAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(MqParser.class)
-    public MqParser mqParser() {
+    public MqParser mqParser(@Autowired(required = false) ObjectMapper objectMapper) {
+        if (objectMapper != null) {
+            return new JacksonMqParser(objectMapper);
+        }
+
         return new JacksonMqParser();
     }
 

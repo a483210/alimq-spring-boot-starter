@@ -10,7 +10,7 @@ import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.message.TransactionMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionExecutor;
-import cn.knowbox.book.alimq.utils.RocketMqUtil;
+import cn.knowbox.book.alimq.utils.RocketMqUtils;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -36,7 +36,7 @@ public class LocalTransactionExecutorImpl<T> implements LocalTransactionExecuter
     @Override
     public TransactionStatus execute(Message msg, Object arg) {
         String msgId = msg.getMsgID();
-        long crc32Id = RocketMqUtil.crc32Code(msg.getBody());
+        long crc32Id = RocketMqUtils.crc32Code(msg.getBody());
         TransactionStatus transactionStatus = null;
 
         try {

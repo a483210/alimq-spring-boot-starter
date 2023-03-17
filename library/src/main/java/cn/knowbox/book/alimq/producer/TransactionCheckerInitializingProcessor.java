@@ -3,7 +3,7 @@ package cn.knowbox.book.alimq.producer;
 import cn.knowbox.book.alimq.annotation.RocketMqChecker;
 import cn.knowbox.book.alimq.properties.RocketMqProperties;
 import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
-import cn.knowbox.book.alimq.utils.RocketMqUtil;
+import cn.knowbox.book.alimq.utils.RocketMqUtils;
 import com.aliyun.openservices.ons.api.bean.TransactionProducerBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -31,9 +31,9 @@ public class TransactionCheckerInitializingProcessor implements InitializingBean
         processor.checkers.forEach(info -> {
             RocketMqChecker annotation = info.getAnnotation();
 
-            String topic = RocketMqUtil.generateTopic(annotation.topic(), properties.getTopicSuffix());
-            String tag = RocketMqUtil.generateTag(annotation.tag(), properties.getTagSuffix());
-            String checkerKey = RocketMqUtil.generateCheckerKey(topic, tag);
+            String topic = RocketMqUtils.generateTopic(annotation.topic(), properties.getTopicSuffix());
+            String tag = RocketMqUtils.generateTag(annotation.tag(), properties.getTagSuffix());
+            String checkerKey = RocketMqUtils.generateCheckerKey(topic, tag);
 
             checkerImpl.put(checkerKey, info.getTarget());
         });

@@ -18,11 +18,19 @@ public class JacksonMqParser implements MqParser {
     private final ObjectMapper mapper;
 
     public JacksonMqParser() {
-        this.mapper = new ObjectMapper();
+        this(new ObjectMapper());
+    }
+
+    public JacksonMqParser(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 
     @Override
     public String format(Object value) {
+        if (value instanceof String) {
+            return (String) value;
+        }
+
         try {
             return mapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {

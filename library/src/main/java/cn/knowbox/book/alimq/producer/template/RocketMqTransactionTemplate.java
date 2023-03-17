@@ -12,7 +12,7 @@ import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.impl.LocalTransactionExecutorImpl;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionExecutor;
-import cn.knowbox.book.alimq.utils.RocketMqUtil;
+import cn.knowbox.book.alimq.utils.RocketMqUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -118,7 +118,7 @@ public class RocketMqTransactionTemplate {
     public SendResult send(RocketMqMessage event, LocalTransactionExecuter executor, Object arg) {
         LocalTransactionCheckerImpl checkerImpl = (LocalTransactionCheckerImpl) transactionProducer.getLocalTransactionChecker();
 
-        String checkerKey = RocketMqUtil.generateCheckerKey(event.getTopic(), event.getTag());
+        String checkerKey = RocketMqUtils.generateCheckerKey(event.getTopic(), event.getTag());
         if (!checkerImpl.contains(checkerKey)) {
             throw new RocketMqException(String.format("TransactionChecker[%s]未初始化！", checkerKey));
         }
