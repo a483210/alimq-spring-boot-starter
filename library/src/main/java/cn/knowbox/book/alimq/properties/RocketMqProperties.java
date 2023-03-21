@@ -32,13 +32,13 @@ public class RocketMqProperties {
      * 生产者配置
      */
     @NestedConfigurationProperty
-    private ProducerProperty producer;
+    private ProducerProperty producer = new ProducerProperty();
 
     /**
      * 消费者配置
      */
     @NestedConfigurationProperty
-    private ConsumerProperty consumer;
+    private ConsumerProperty consumer = new ConsumerProperty();
 
     /**
      * topic后缀

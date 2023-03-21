@@ -1,6 +1,7 @@
 package cn.knowbox.book.alimq.consumer;
 
 import cn.knowbox.book.alimq.annotation.RocketMqConsume;
+import cn.knowbox.book.alimq.error.MessageNullException;
 import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
@@ -30,7 +31,12 @@ public class ConsumerHandler<T> implements MessageListener {
     private final ConsumerListener<T> consumerListener;
     private final Class<? extends Throwable>[] reconsumeFor;
 
-    ConsumerHandler(MqParser mqParser, ConsumerListener<T> consumerListener, RocketMqConsume rocketMqConsume) {
+    private final boolean logging;
+
+    ConsumerHandler(MqParser mqParser,
+                    ConsumerListener<T> consumerListener,
+                    RocketMqConsume rocketMqConsume,
+                    boolean logging) {
         Class<?> listenerCls = AopUtils.getTargetClass(consumerListener);
 
         this.type = RocketMqUtils.parseType(listenerCls, ConsumerListener.class);
@@ -41,33 +47,37 @@ public class ConsumerHandler<T> implements MessageListener {
         this.mqParser = mqParser;
         this.consumerListener = consumerListener;
         this.reconsumeFor = rocketMqConsume.reconsumeFor();
+
+        this.logging = logging;
     }
 
     @Override
     public Action consume(Message message, ConsumeContext context) {
-        log.info("consume [message：(topic={}, tag={}, msgId={}, startDeliverTime={})]",
-                message.getTopic(), message.getTag(), message.getMsgID(), message.getStartDeliverTime());
+        if (logging) {
+            log.info("consume [message：(topic={}, tag={}, msgId={}, startDeliverTime={})]",
+                    message.getTopic(), message.getTag(), message.getMsgID(), message.getStartDeliverTime());
+        }
 
         try {
             RocketMqMessage rocketMqMessage = (RocketMqMessage) SerializationUtils.deserialize(message.getBody());
             if (rocketMqMessage == null) {
-                throw new NullPointerException("rocketMqMessage null");
+                throw new MessageNullException("rocketMqMessage null");
             }
             String domain = rocketMqMessage.getDomain();
             if (ObjectUtils.isEmpty(domain)) {
-                throw new NullPointerException("domain null");
+                throw new MessageNullException("domain null");
             }
             T value = mqParser.parse(domain, type);
             if (value == null) {
-                throw new NullPointerException("value null");
+                throw new MessageNullException("value null");
             }
 
             consumerListener.onMessage(value);
             return Action.CommitMessage;
         } catch (Throwable throwable) {
-            log.warn("consume message error msgId =" + message.getMsgID(), throwable);
+            log.error("consume message error msgId =" + message.getMsgID(), throwable);
 
-            if (reconsumeFor.length > 0) {
+            if (reconsumeFor != null && reconsumeFor.length > 0) {
                 Class<?> throwableClazz = throwable.getClass();
                 for (Class<? extends Throwable> cls : reconsumeFor) {
                     if (cls.isAssignableFrom(throwableClazz)) {

@@ -45,7 +45,10 @@ public class ConsumerInitializingProcessor implements InitializingBean {
             getConsumer(annotation, groupId)
                     .subscribe(topic,
                             tag,
-                            new ConsumerHandler<>(mqParser, consumerInfo.getTarget(), annotation));
+                            new ConsumerHandler<>(mqParser,
+                                    consumerInfo.getTarget(),
+                                    annotation,
+                                    properties.getConsumer().isLogging()));
 
             log.info("consumer subscribe: topic={}, groupId={}, tag={}", tag, groupId, tag);
         });
@@ -90,7 +93,7 @@ public class ConsumerInitializingProcessor implements InitializingBean {
         return consumer;
     }
 
-    private void shutdown() {
+    public void shutdown() {
         if (CollectionUtils.isEmpty(consumers)) {
             return;
         }

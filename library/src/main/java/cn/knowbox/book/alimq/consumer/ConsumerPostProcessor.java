@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class ConsumerPostProcessor implements BeanPostProcessor {
 
-    protected final List<ConsumerInfo> consumers = new ArrayList<>();
+    final List<ConsumerInfo> consumers = new ArrayList<>();
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
