@@ -304,13 +304,13 @@ public class RocketMqTemplate {
 
     static Message createMessage(Properties properties, RocketMqMessage event) {
         if (event == null) {
-            throw new RocketMqException("事件不允许为空！");
+            throw new RocketMqException("event cannot be null.");
         }
         if (ObjectUtils.isEmpty(event.getTopic())) {
-            throw new RocketMqException("Topic不允许为空！");
+            throw new RocketMqException("topic cannot be null.");
         }
         if (event.getDomain() == null) {
-            throw new RocketMqException("Domain不允许为空！");
+            throw new RocketMqException("domain cannot be null.");
         }
 
         int clusterType = (int) properties.getOrDefault(RocketMqConstants.CLUSTER_TYPE, RocketMqClusterType.ALIYUN.getType());
@@ -329,7 +329,7 @@ public class RocketMqTemplate {
 
     static String format(MqParser mqParser, Object domain) {
         if (domain == null) {
-            throw new RocketMqException("domain不能为空！");
+            throw new RocketMqException("domain cannot be null.");
         }
 
         if (domain instanceof String) {
@@ -338,7 +338,7 @@ public class RocketMqTemplate {
 
         String json = mqParser.format(domain);
         if (ObjectUtils.isEmpty(json)) {
-            throw new RocketMqException("domain不是Json！");
+            throw new RocketMqException("the domain cannot be serialized into JSON.");
         }
 
         return json;
@@ -350,9 +350,9 @@ public class RocketMqTemplate {
         }
         long nowTime = System.currentTimeMillis();
         if (startTime <= nowTime) {
-            throw new RocketMqException("发送事件不能小于当前时间！");
+            throw new RocketMqException("sending time cannot be earlier than the current time.");
         } else if (startTime > nowTime + DELAY_DAY_7) {
-            throw new RocketMqException("发送事件不能大于7天时间！");
+            throw new RocketMqException("the delayed sending time cannot be greater than 7 days.");
         }
     }
 }

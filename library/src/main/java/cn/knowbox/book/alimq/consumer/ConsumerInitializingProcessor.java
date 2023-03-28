@@ -38,8 +38,8 @@ public class ConsumerInitializingProcessor implements InitializingBean {
         processor.consumers.forEach(consumerInfo -> {
             RocketMqConsume annotation = consumerInfo.getAnnotation();
 
-            String topic = annotation.topic() + properties.getTopicSuffix();
-            String groupId = annotation.groupId() + properties.getGroupSuffix();
+            String topic = RocketMqUtils.generateTopic(annotation.topic(), properties.getTopicSuffix());
+            String groupId = RocketMqUtils.generateGroupId(annotation.groupId(), properties.getGroupSuffix());
             String tag = RocketMqUtils.generateTag(annotation.tag(), properties.getTagSuffix());
 
             getConsumer(annotation, groupId)

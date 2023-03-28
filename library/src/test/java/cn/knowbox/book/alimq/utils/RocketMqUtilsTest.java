@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Type;
 import java.util.function.Function;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 /**
@@ -42,6 +43,15 @@ public class RocketMqUtilsTest {
 
         assertThat(result2)
                 .isEqualTo("tag1-dev || tag2-dev");
+
+        String result3 = RocketMqUtils.generateTag(new String[]{"*"}, "-dev");
+
+        assertThat(result3)
+                .isEqualTo("*");
+
+        assertThatThrownBy(() -> {
+            RocketMqUtils.generateTag(new String[]{"*", "tag2"}, "-dev");
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

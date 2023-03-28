@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.zip.CRC32;
 
@@ -66,6 +67,16 @@ public class RocketMqUtils {
     }
 
     /**
+     * 生成topic
+     *
+     * @param groupId     groupId
+     * @param groupSuffix groupId后缀
+     */
+    public static String generateGroupId(String groupId, String groupSuffix) {
+        return groupId + groupSuffix;
+    }
+
+    /**
      * 生成tag
      *
      * @param tags      tag集合
@@ -73,8 +84,18 @@ public class RocketMqUtils {
      */
     public static String generateTag(String[] tags, String tagSuffix) {
         if (!ObjectUtils.isEmpty(tags)) {
+            //*代表所有
+            if (tags.length == 1 && Objects.equals(tags[0], "*")) {
+                return "*";
+            }
+
             tags = Arrays.stream(tags)
-                    .map(it -> it + tagSuffix)
+                    .map(it -> {
+                        if (Objects.equals(it, "*")) {
+                            throw new IllegalArgumentException("The use of the asterisk (*) is not allowed under multiple tags.");
+                        }
+                        return it + tagSuffix;
+                    })
                     .toArray(String[]::new);
         }
         return StringUtils.arrayToDelimitedString(tags, " || ");

@@ -4,10 +4,10 @@ import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.message.TransactionMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
+import cn.knowbox.book.alimq.producer.intefaces.DelegateTransactionChecker;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionChecker;
 import cn.knowbox.book.alimq.utils.RocketMqUtils;
 import com.aliyun.openservices.ons.api.Message;
-import com.aliyun.openservices.ons.api.transaction.LocalTransactionChecker;
 import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.SerializationUtils;
@@ -22,37 +22,38 @@ import java.util.Map;
  * @author Created by gold on 2019/10/4 15:27
  */
 @Slf4j
-public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
+public class DelegateTransactionCheckerImpl implements DelegateTransactionChecker {
 
     private final MqParser mqParser;
 
     private final Map<String, TransactionChecker<?>> transactionChecks;
     private final Map<String, Type> checkTypes;
 
-    public LocalTransactionCheckerImpl(MqParser mqParser) {
+    public DelegateTransactionCheckerImpl(MqParser mqParser) {
         this.mqParser = mqParser;
 
         this.transactionChecks = new HashMap<>();
         this.checkTypes = new HashMap<>();
     }
 
-    public void put(String checkerKey, TransactionChecker<?> transactionCheck) {
-        transactionChecks.put(checkerKey, transactionCheck);
+    @Override
+    public void put(String checkerKey, TransactionChecker<?> transactionChecker) {
+        transactionChecks.put(checkerKey, transactionChecker);
 
-        Type type = RocketMqUtils.parseType(transactionCheck.getClass(), TransactionChecker.class);
+        Type type = RocketMqUtils.parseType(transactionChecker.getClass(), TransactionChecker.class);
         if (type == null) {
-            throw new RocketMqException(String.format("%s缺少泛型！", transactionCheck.getClass().getSimpleName()));
+            throw new RocketMqException(String.format("%s is missing a generic type.", transactionChecker.getClass().getSimpleName()));
         }
 
         checkTypes.put(checkerKey, type);
     }
 
+    @Override
     public boolean contains(String checkerKey) {
         return transactionChecks.containsKey(checkerKey);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public TransactionStatus check(Message msg) {
         String msgId = msg.getMsgID();
         long crc32Id = RocketMqUtils.crc32Code(msg.getBody());

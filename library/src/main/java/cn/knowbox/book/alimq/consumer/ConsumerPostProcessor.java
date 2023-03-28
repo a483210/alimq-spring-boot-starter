@@ -24,7 +24,7 @@ public class ConsumerPostProcessor implements BeanPostProcessor {
         RocketMqConsume annotation = AnnotationUtils.getAnnotation(targetType, RocketMqConsume.class);
         if (annotation != null) {
             if (!(bean instanceof ConsumerListener<?>)) {
-                throw new IllegalStateException("被RocketMqConsume注解的类必须继承于ConsumerListener");
+                throw new IllegalStateException("classes annotated with RocketMqConsume must extend ConsumerListener.");
             }
 
             consumers.add(new ConsumerInfo((ConsumerListener<?>) bean, annotation));

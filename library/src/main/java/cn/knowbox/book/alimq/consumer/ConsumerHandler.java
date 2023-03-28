@@ -41,7 +41,7 @@ public class ConsumerHandler<T> implements MessageListener {
 
         this.type = RocketMqUtils.parseType(listenerCls, ConsumerListener.class);
         if (type == null) {
-            throw new RocketMqException(String.format("%s缺少泛型！", listenerCls.getSimpleName()));
+            throw new RocketMqException(String.format("%s is missing a generic type.", listenerCls.getSimpleName()));
         }
 
         this.mqParser = mqParser;

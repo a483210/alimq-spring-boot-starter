@@ -9,7 +9,7 @@ import cn.knowbox.book.alimq.error.RocketMqException;
 import cn.knowbox.book.alimq.message.IMessageEvent;
 import cn.knowbox.book.alimq.message.RocketMqMessage;
 import cn.knowbox.book.alimq.parser.MqParser;
-import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
+import cn.knowbox.book.alimq.producer.impl.DelegateTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.impl.LocalTransactionExecutorImpl;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionExecutor;
 import cn.knowbox.book.alimq.utils.RocketMqUtils;
@@ -116,7 +116,7 @@ public class RocketMqTransactionTemplate {
      * @param arg      额外参数
      */
     public SendResult send(RocketMqMessage event, LocalTransactionExecuter executor, Object arg) {
-        LocalTransactionCheckerImpl checkerImpl = (LocalTransactionCheckerImpl) transactionProducer.getLocalTransactionChecker();
+        DelegateTransactionCheckerImpl checkerImpl = (DelegateTransactionCheckerImpl) transactionProducer.getLocalTransactionChecker();
 
         String checkerKey = RocketMqUtils.generateCheckerKey(event.getTopic(), event.getTag());
         if (!checkerImpl.contains(checkerKey)) {

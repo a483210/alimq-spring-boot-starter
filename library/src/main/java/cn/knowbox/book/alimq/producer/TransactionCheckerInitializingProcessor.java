@@ -1,8 +1,8 @@
 package cn.knowbox.book.alimq.producer;
 
 import cn.knowbox.book.alimq.annotation.RocketMqChecker;
+import cn.knowbox.book.alimq.producer.intefaces.DelegateTransactionChecker;
 import cn.knowbox.book.alimq.properties.RocketMqProperties;
-import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
 import cn.knowbox.book.alimq.utils.RocketMqUtils;
 import com.aliyun.openservices.ons.api.bean.TransactionProducerBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -14,14 +14,14 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class TransactionCheckerInitializingProcessor implements InitializingBean {
 
-    private final LocalTransactionCheckerImpl checkerImpl;
+    private final DelegateTransactionChecker checker;
     private final RocketMqProperties properties;
     private final TransactionCheckerPostProcessor processor;
 
     public TransactionCheckerInitializingProcessor(TransactionProducerBean transactionProducer,
                                                    RocketMqProperties properties,
                                                    TransactionCheckerPostProcessor processor) {
-        this.checkerImpl = (LocalTransactionCheckerImpl) transactionProducer.getLocalTransactionChecker();
+        this.checker = (DelegateTransactionChecker) transactionProducer.getLocalTransactionChecker();
         this.properties = properties;
         this.processor = processor;
     }
@@ -35,7 +35,7 @@ public class TransactionCheckerInitializingProcessor implements InitializingBean
             String tag = RocketMqUtils.generateTag(annotation.tag(), properties.getTagSuffix());
             String checkerKey = RocketMqUtils.generateCheckerKey(topic, tag);
 
-            checkerImpl.put(checkerKey, info.getTarget());
+            checker.put(checkerKey, info.getTarget());
         });
     }
 }

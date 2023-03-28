@@ -25,7 +25,7 @@ public class TransactionCheckerPostProcessor implements BeanPostProcessor {
         RocketMqChecker annotation = AnnotationUtils.getAnnotation(clazz, RocketMqChecker.class);
         if (annotation != null) {
             if (!(bean instanceof TransactionChecker<?>)) {
-                throw new IllegalStateException("被RocketMqChecker注解的类必须继承于TransactionChecker");
+                throw new IllegalStateException("classes annotated with RocketMqChecker must extend TransactionChecker.");
             }
 
             checkers.add(new TransactionCheckerInfo((TransactionChecker<?>) bean, annotation));

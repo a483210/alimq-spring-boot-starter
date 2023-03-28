@@ -7,7 +7,7 @@ import cn.knowbox.book.alimq.parser.JacksonMqParser;
 import cn.knowbox.book.alimq.parser.MqParser;
 import cn.knowbox.book.alimq.producer.TransactionCheckerInitializingProcessor;
 import cn.knowbox.book.alimq.producer.TransactionCheckerPostProcessor;
-import cn.knowbox.book.alimq.producer.impl.LocalTransactionCheckerImpl;
+import cn.knowbox.book.alimq.producer.impl.DelegateTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.template.RocketMqOrderTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTransactionTemplate;
@@ -103,7 +103,7 @@ public class RocketMqAutoConfiguration {
 
         TransactionProducerBean producerBean = new TransactionProducerBean();
         producerBean.setProperties(createProperties(rocketMqProperties));
-        producerBean.setLocalTransactionChecker(new LocalTransactionCheckerImpl(mqParser));
+        producerBean.setLocalTransactionChecker(new DelegateTransactionCheckerImpl(mqParser));
         producerBean.start();
 
         return producerBean;
