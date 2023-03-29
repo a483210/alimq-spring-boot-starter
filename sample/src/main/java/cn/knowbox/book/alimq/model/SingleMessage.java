@@ -1,7 +1,6 @@
 package cn.knowbox.book.alimq.model;
 
 import lombok.Data;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * 私聊消息

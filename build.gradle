@@ -1,10 +1,12 @@
 buildscript {
     ext {
-        springBootVersion = "2.7.9"
+        springBootVersion = "3.0.5"
 
         rocketMqVersion = "1.8.8.8.Final"
+        nativeVersion = "0.9.19"
+
         assertjVersion = "3.24.2"
-        mockitoVersion = "5.2.0"
+        mockitoVersion = "4.8.1"
     }
 
     repositories {
@@ -13,6 +15,7 @@ buildscript {
 
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        classpath "org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin:$nativeVersion"
     }
 }
 
@@ -33,4 +36,8 @@ subprojects {
             mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
         }
     }
+}
+
+ext {
+    skipNativeBuild = System.getProperty("skipNativeBuild", "false")
 }

@@ -1,7 +1,7 @@
 apply plugin: "java-library"
 
 dependencies {
-    api "com.aliyun.openservices:ons-client:$rocketMqVersion"
+    api "com.a483210:ons-client:$rocketMqVersion"
 
     implementation "com.fasterxml.jackson.core:jackson-databind"
 

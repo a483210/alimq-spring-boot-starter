@@ -1,6 +1,10 @@
 apply plugin: "java"
 apply plugin: "org.springframework.boot"
 
+if (rootProject.ext.skipNativeBuild != "true") {
+    apply plugin: "org.graalvm.buildtools.native"
+}
+
 dependencies {
     implementation project(":library")
 
@@ -10,4 +14,16 @@ dependencies {
 
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
+}
+
+bootBuildImage {
+    String imageSuffix = rootProject.ext.skipNativeBuild != "true" ? "native" : "jvm"
+
+    imageName = "com/a483210/alimq/prod/${project.name}-$imageSuffix:$version"
+}
+
+if (rootProject.ext.skipNativeBuild != "true") {
+    graalvmNative {
+        testSupport = false
+    }
 }

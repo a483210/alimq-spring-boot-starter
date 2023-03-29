@@ -15,5 +15,7 @@ aliyun:
       enabled: true
       order-enabled: true
       transaction-enabled: true
+      logging: true
     consumer:
       enabled: true
+      logging: true

@@ -15,8 +15,6 @@ import java.util.UUID;
 @Data
 public class RocketMqMessage implements Serializable {
 
-    private static final long serialVersionUID = -2624253925403159396L;
-
     /**
      * 创建消息
      *

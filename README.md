@@ -3,7 +3,21 @@
 - [spring-boot-starter-alimq](https://github.com/jibaole/spring-boot-starter-alimq)的Gradle版本
 - 调整了Template的封装使用、修改domain使用json交互、添加RocketMqChecker注解简化事务使用
 
-> 兼容阿里云版与社区版
+> 1、兼容阿里云版与社区版
+> 2、兼容SpringBoot3.0 Native
+
+## Sample Native使用
+
+> 进入sample目录
+
+- 打包为Jvm镜像
+  - gradle -DskipNativeBuild=true bootBuildImage
+- 打包为Native镜像
+  - 必须使用Graalvm并且需要已经安装gu插件
+  - gradle bootBuildImage
+- 打包为Native二进制文件
+  - 必须使用Graalvm并且需要已经安装gu插件
+  - gradle nativeCompile
 
 ## 使用
 

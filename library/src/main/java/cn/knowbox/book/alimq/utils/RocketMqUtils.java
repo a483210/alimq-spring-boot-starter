@@ -1,6 +1,7 @@
 package cn.knowbox.book.alimq.utils;
 
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
+import org.springframework.aot.hint.MemberCategory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -18,9 +19,16 @@ import java.util.zip.CRC32;
  * @author Created by gold on 2019/10/5 14:33
  */
 public class RocketMqUtils {
-
     private RocketMqUtils() {
     }
+
+    public static final MemberCategory[] DEFAULT_MEMBER_CATEGORY = new MemberCategory[]{
+            MemberCategory.DECLARED_FIELDS,
+            MemberCategory.PUBLIC_FIELDS,
+            MemberCategory.INVOKE_PUBLIC_METHODS,
+            MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+            MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS
+    };
 
     /**
      * 检查配置是否合法
@@ -135,6 +143,17 @@ public class RocketMqUtils {
         }
 
         return typeParams[0];
+    }
+
+    /**
+     * 是否为系统类型
+     */
+    public static boolean isSystemClass(String name) {
+        return name.startsWith("java.")
+                || name.startsWith("javax.")
+                || name.startsWith("kotlin.")
+                || name.startsWith("kotlinx.")
+                || name.startsWith("org.springframework.");
     }
 }
 

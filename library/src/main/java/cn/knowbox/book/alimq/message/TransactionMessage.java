@@ -2,13 +2,15 @@ package cn.knowbox.book.alimq.message;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 事务处理类型
  *
  * @author Created by gold on 2019/10/5 16:39
  */
 @Data
-public class TransactionMessage<T> {
+public class TransactionMessage<T> implements Serializable {
 
     /**
      * 事件序列ID

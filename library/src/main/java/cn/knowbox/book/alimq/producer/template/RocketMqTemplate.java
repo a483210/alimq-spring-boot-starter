@@ -332,10 +332,6 @@ public class RocketMqTemplate {
             throw new RocketMqException("domain cannot be null.");
         }
 
-        if (domain instanceof String) {
-            return (String) domain;
-        }
-
         String json = mqParser.format(domain);
         if (ObjectUtils.isEmpty(json)) {
             throw new RocketMqException("the domain cannot be serialized into JSON.");

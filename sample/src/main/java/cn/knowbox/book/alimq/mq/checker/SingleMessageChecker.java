@@ -7,6 +7,7 @@ import cn.knowbox.book.alimq.message.TransactionMessage;
 import cn.knowbox.book.alimq.model.SingleMessage;
 import cn.knowbox.book.alimq.producer.intefaces.TransactionChecker;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 
 /**
  * 单聊消息事务检查
@@ -18,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SingleMessageChecker implements TransactionChecker<SingleMessage> {
 
     @Override
-    public TransactionStatus check(TransactionMessage<SingleMessage> transactionMessage) {
+    public TransactionStatus check(@NonNull TransactionMessage<SingleMessage> transactionMessage) {
         log.info("checkTransaction {}", transactionMessage);
 
         return TransactionStatus.CommitTransaction;
