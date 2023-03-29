@@ -6,6 +6,11 @@
 > 1、兼容阿里云版与社区版
 > 2、兼容SpringBoot3.0 Native
 
+## 分支
+
+- [release/1.0.0](https://github.com/a483210/alimq-spring-boot-starter/tree/release/3.0.0) 基于SpringBoot2.7.x版本
+- [release/3.0.0](https://github.com/a483210/alimq-spring-boot-starter/tree/release/3.0.0)基于SpringBoot3.0.x版本
+
 ## Sample Native使用
 
 > 进入sample目录
