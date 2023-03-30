@@ -8,20 +8,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 
 /**
- * 私聊消费者
+ * 事务消息消费者
  *
- * @author Created by gold on 2019/10/5 14:34
+ * @author Created by gold on 2023/3/30 10:37
+ * @since 1.0.0
  */
 @Slf4j
-@RocketMqConsume(groupId = Constants.GroupId.SINGLE,
-        topic = Constants.Topic.SINGLE,
-        tag = Constants.Tag.SINGLE,
+@RocketMqConsume(groupId = Constants.GroupId.TRANSACTION,
+        topic = Constants.Topic.TRANSACTION,
+        tag = Constants.Tag.TRANSACTION,
         reconsumeFor = IllegalArgumentException.class)
-public class SingleMessageConsumer implements ConsumerListener<SingleMessage> {
+public class TransactionMessageConsumer implements ConsumerListener<SingleMessage> {
 
     @Override
     public void onMessage(@NonNull SingleMessage message) {
-        log.info("single {}", message);
+        log.info("transaction {}", message);
 
         if (message.getContent().toLowerCase().endsWith("reject")) {
             throw new NullPointerException("reject message");
