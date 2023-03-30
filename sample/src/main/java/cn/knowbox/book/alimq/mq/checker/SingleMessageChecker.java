@@ -1,5 +1,6 @@
 package cn.knowbox.book.alimq.mq.checker;
 
+import cn.knowbox.book.alimq.consts.Constants;
 import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
 
 import cn.knowbox.book.alimq.annotation.RocketMqChecker;
@@ -15,7 +16,7 @@ import org.springframework.lang.NonNull;
  * @author Created by gold on 2019/10/5 17:11
  */
 @Slf4j
-@RocketMqChecker(topic = "singleMessage", tag = "v1")
+@RocketMqChecker(topic = Constants.Topic.TRANSACTION, tag = Constants.Tag.TRANSACTION)
 public class SingleMessageChecker implements TransactionChecker<SingleMessage> {
 
     @Override

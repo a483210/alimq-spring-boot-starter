@@ -122,7 +122,7 @@ public class ConsumerInitializingProcessor implements InitializingBean {
     /**
      * 获取消费者状态
      *
-     * @return Map<GroupId, 是否成功订阅>
+     * @return Map[GroupId, 是否成功订阅]
      */
     public Map<String, Boolean> getStatus() {
         if (CollectionUtils.isEmpty(consumers)) {

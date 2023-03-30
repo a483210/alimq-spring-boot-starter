@@ -7,24 +7,22 @@ import cn.knowbox.book.alimq.model.SingleMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
+
 /**
  * 私聊消费者
  *
  * @author Created by gold on 2019/10/5 14:34
  */
 @Slf4j
-@RocketMqConsume(groupId = Constants.GroupId.SINGLE,
+@RocketMqConsume(groupId = Constants.GroupId.SINGLE_LIST,
         topic = Constants.Topic.SINGLE,
-        tag = Constants.Tag.SINGLE,
+        tag = Constants.Tag.LIST,
         reconsumeFor = IllegalArgumentException.class)
-public class SingleMessageConsumer implements ConsumerListener<SingleMessage> {
+public class SingleMessageListConsumer implements ConsumerListener<List<SingleMessage>> {
 
     @Override
-    public void onMessage(@NonNull SingleMessage message) {
-        log.info("single {}", message);
-
-        if (message.getContent().toLowerCase().endsWith("reject")) {
-            throw new NullPointerException("reject message");
-        }
+    public void onMessage(@NonNull List<SingleMessage> messages) {
+        log.info("list {}", messages);
     }
 }

@@ -1,23 +1,26 @@
 ### 发送普通消息
 POST http://localhost:8089/mq/send/content
 
-### 发送延时消息，默认5秒
-POST http://localhost:8089/mq/sendDelay/contentDelay
-
-### 发送延时消息，自定义时间
-POST http://localhost:8089/mq/sendDelay/contentDelay?delay=15000
+### 发送列表消息
+POST http://localhost:8089/mq/send-list/content
 
 ### 发送异步消息
-POST http://localhost:8089/mq/sendAsync/contentAsync
+POST http://localhost:8089/mq/send-async/contentAsync
+
+### 发送延时消息，默认5秒
+POST http://localhost:8089/mq/send-delay/contentDelay
+
+### 发送延时消息，自定义时间
+POST http://localhost:8089/mq/send-delay/contentDelay?delay=15000
 
 ### 发送顺序消息
-POST http://localhost:8089/mq/sendOrder/contentOrder
+POST http://localhost:8089/mq/send-order/contentOrder
 
 ### 发送事务消息
-POST http://localhost:8089/mq/sendTransaction/contentTransaction
+POST http://localhost:8089/mq/send-transaction/contentTransaction
 
 ### 发送事务消息，发送拒绝
-POST http://localhost:8089/mq/sendTransaction/contentTransaction?reject=1
+POST http://localhost:8089/mq/send-transaction/contentTransaction?reject=1
 
 ### 发送事务消息，消费拒绝
-POST http://localhost:8089/mq/sendTransaction/contentTransactionReject
+POST http://localhost:8089/mq/send-transaction/contentTransactionReject

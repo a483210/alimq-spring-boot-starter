@@ -24,6 +24,16 @@
   - 必须使用Graalvm并且需要已经安装gu插件
   - gradle nativeCompile
 
+## 引用
+
+```xml
+<dependency>
+    <groupId>com.a483210</groupId>
+    <artifactId>alimq-spring-boot-starter</artifactId>
+    <version>3.0.0</version>
+</dependency>
+```
+
 ## 使用
 
 消息消费
