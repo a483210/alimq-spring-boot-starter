@@ -8,16 +8,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 
 /**
- * 私聊消费者
+ * 延迟消息消费者
  *
- * @author Created by gold on 2019/10/5 14:34
+ * @author Created by gold on 2023/3/29 18:09
+ * @since 1.0.0
  */
 @Slf4j
-@RocketMqConsume(groupId = Constants.GROUP_ID_MESSAGE, topic = Constants.TOPIC_SINGLE, tag = "v2", reconsumeFor = IllegalArgumentException.class)
-public class SingleMessageG2Consumer implements ConsumerListener<SingleMessage> {
+@RocketMqConsume(groupId = Constants.GroupId.DELAY,
+        topic = Constants.Topic.DELAY,
+        tag = Constants.Tag.DELAY,
+        reconsumeFor = IllegalArgumentException.class)
+public class DelayMessageConsumer implements ConsumerListener<SingleMessage> {
 
     @Override
     public void onMessage(@NonNull SingleMessage message) {
-        log.info("g2 {}", message);
+        log.info("delay {}", message);
     }
 }

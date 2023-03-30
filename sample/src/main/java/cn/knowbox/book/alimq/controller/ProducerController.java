@@ -1,11 +1,12 @@
 package cn.knowbox.book.alimq.controller;
 
 import cn.knowbox.book.alimq.model.SingleMessage;
-import cn.knowbox.book.alimq.mq.MessageEvent;
+import cn.knowbox.book.alimq.consts.MessageEvent;
 import cn.knowbox.book.alimq.producer.template.RocketMqOrderTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTemplate;
 import cn.knowbox.book.alimq.producer.template.RocketMqTransactionTemplate;
 import com.aliyun.openservices.ons.api.transaction.TransactionStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.UUID;
  *
  * @author Created by gold on 2019/9/25 11:09
  */
+@Slf4j
 @RestController
 @RequestMapping("/mq")
 public class ProducerController {
@@ -30,8 +32,23 @@ public class ProducerController {
     @Autowired
     private RocketMqTransactionTemplate rocketMqTransactionTemplate;
 
-    @PostMapping(value = "/send/{content}")
+    @PostMapping("/send/{content}")
     public String singleMessage(@PathVariable("content") String content) {
+        if (ObjectUtils.isEmpty(content)) {
+            return "failure";
+        }
+
+        SingleMessage singleMessage = new SingleMessage();
+        singleMessage.setMsgId(UUID.randomUUID().toString());
+        singleMessage.setContent(content);
+
+        rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage);
+
+        return "success";
+    }
+
+    @PostMapping("/send-list/{content}")
+    public String listSingleMessage(@PathVariable("content") String content) {
         if (ObjectUtils.isEmpty(content)) {
             return "failure";
         }
@@ -46,35 +63,13 @@ public class ProducerController {
             list.add(singleMessage);
         }
 
-        rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE_LIST, list);
+        rocketMqTemplate.send(MessageEvent.SINGLE_LIST_MESSAGE, list);
 
         return "success";
     }
 
-    @PostMapping(value = "/sendDelay/{content}")
-    public String delaySingleMessage(@PathVariable("content") String content,
-                                     @RequestParam(value = "delay", required = false) Long delay) {
-        if (ObjectUtils.isEmpty(content)) {
-            return "failure";
-        }
-
-        SingleMessage singleMessage = new SingleMessage();
-        singleMessage.setMsgId(UUID.randomUUID().toString());
-        singleMessage.setContent(content);
-
-        if (delay == null) {
-            rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage, 5000L);
-        } else if (delay <= 0L) {
-            rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage);
-        } else {
-            rocketMqTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage, delay);
-        }
-
-        return "success";
-    }
-
-    @PostMapping(value = "/sendAsync/{content}")
-    public String asyncSingleMessage(@PathVariable("content") String content) {
+    @PostMapping("/send-async/{content}")
+    public String asyncMessage(@PathVariable("content") String content) {
         if (ObjectUtils.isEmpty(content)) {
             return "failure";
         }
@@ -88,8 +83,9 @@ public class ProducerController {
         return "success";
     }
 
-    @PostMapping(value = "/sendOrder/{content}")
-    public String orderSingleMessage(@PathVariable("content") String content) {
+    @PostMapping("/send-delay/{content}")
+    public String delayMessage(@PathVariable("content") String content,
+                               @RequestParam(value = "delay", required = false) Long delay) {
         if (ObjectUtils.isEmpty(content)) {
             return "failure";
         }
@@ -98,13 +94,34 @@ public class ProducerController {
         singleMessage.setMsgId(UUID.randomUUID().toString());
         singleMessage.setContent(content);
 
-        rocketMqOrderTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage);
+        if (delay == null) {
+            rocketMqTemplate.send(MessageEvent.DELAY_MESSAGE, singleMessage, 5000L);
+        } else if (delay <= 0L) {
+            rocketMqTemplate.send(MessageEvent.DELAY_MESSAGE, singleMessage);
+        } else {
+            rocketMqTemplate.send(MessageEvent.DELAY_MESSAGE, singleMessage, delay);
+        }
 
         return "success";
     }
 
-    @PostMapping(value = "/sendTransaction/{content}")
-    public String transactionSingleMessage(@PathVariable("content") String content,
+    @PostMapping("/send-order/{content}")
+    public String orderMessage(@PathVariable("content") String content) {
+        if (ObjectUtils.isEmpty(content)) {
+            return "failure";
+        }
+
+        SingleMessage singleMessage = new SingleMessage();
+        singleMessage.setMsgId(UUID.randomUUID().toString());
+        singleMessage.setContent(content);
+
+        rocketMqOrderTemplate.send(MessageEvent.ORDER_MESSAGE, singleMessage);
+
+        return "success";
+    }
+
+    @PostMapping("/send-transaction/{content}")
+    public String transactionMessage(@PathVariable("content") String content,
                                            @RequestParam(value = "reject", required = false) Integer reject) {
         if (ObjectUtils.isEmpty(content)) {
             return "failure";
@@ -114,7 +131,7 @@ public class ProducerController {
         singleMessage.setMsgId(UUID.randomUUID().toString());
         singleMessage.setContent(content);
 
-        rocketMqTransactionTemplate.send(MessageEvent.SINGLE_MESSAGE, singleMessage,
+        rocketMqTransactionTemplate.send(MessageEvent.TRANSACTION_MESSAGE, singleMessage,
                 message -> {
                     if (reject != null && reject == 1) {
                         throw new NullPointerException("reject execute");

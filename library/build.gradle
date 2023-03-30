@@ -1,4 +1,7 @@
 apply plugin: "java-library"
+apply plugin: "com.vanniktech.maven.publish"
+
+archivesBaseName = "alimq-spring-boot-starter"
 
 dependencies {
     api "com.a483210:ons-client:$rocketMqVersion"
