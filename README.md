@@ -5,6 +5,16 @@
 
 > 兼容阿里云版与社区版
 
+## 引用
+
+```xml
+<dependency>
+    <groupId>com.a483210</groupId>
+    <artifactId>alimq-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 ## 使用
 
 消息消费

@@ -5,6 +5,8 @@ buildscript {
         rocketMqVersion = "1.8.8.8.Final"
         assertjVersion = "3.24.2"
         mockitoVersion = "5.2.0"
+
+        mavenPublishVersion = "0.25.1"
     }
 
     repositories {
@@ -13,6 +15,7 @@ buildscript {
 
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        classpath "com.vanniktech:gradle-maven-publish-plugin:$mavenPublishVersion"
     }
 }
 
