@@ -25,7 +25,7 @@
 <dependency>
     <groupId>com.a483210</groupId>
     <artifactId>alimq-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
